@@ -12,8 +12,8 @@ class Window
 		bool Poll();
 		std::unique_ptr<GLFWwindow, GlfwWindowDestroyer>& GetUnderlyingWindow();
 	private:
-		int width;
-		int height;
-		std::string title;
-		std::unique_ptr<GLFWwindow, GlfwWindowDestroyer> glfwWindow;
+		int width_;
+		int height_;
+		std::string title_;
+		std::unique_ptr<GLFWwindow, GlfwWindowDestroyer> glfw_window_;
 };

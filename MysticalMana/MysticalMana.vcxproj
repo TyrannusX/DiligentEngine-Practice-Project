@@ -126,7 +126,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\code\c++\MysticalMana\External\Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="MysticalMana.cpp" />
     <ClCompile Include="RendererManager.cpp" />
@@ -154,6 +155,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="AudioEntity.h" />
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BaseEntity.h" />
     <ClInclude Include="GlfwWindowDestroyer.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="RendererManager.h" />
