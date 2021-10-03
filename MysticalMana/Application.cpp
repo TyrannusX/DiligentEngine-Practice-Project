@@ -21,6 +21,7 @@ void Application::Run()
 	{
 		app_is_running = !window_->Poll();
 		audio_manager_->PlayAudio(audio_entity);
+		renderer_manager_->PaintNextFrame();
 	} 
 	while (app_is_running);
 }

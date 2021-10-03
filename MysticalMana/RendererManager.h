@@ -6,5 +6,6 @@ class RendererManager
 {
 	public:
 		RendererManager(std::unique_ptr<Window>& window);
+		void PaintNextFrame();
 };
 
