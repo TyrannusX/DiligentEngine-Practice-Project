@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "AudioEntity.h"
+#include "StaticEntity.h"
 #include <iostream>
 
 Application::Application()
@@ -12,9 +13,30 @@ Application::Application()
 
 void Application::Run()
 {
-	//DEBUG CODE. HARD CODING ENTITY DATA FOR NOW
+	//HARD CODED ENTITIES
+
+	//Audio
 	AudioEntity audio_entity;
+	audio_entity.id = "BACKGROUND_MUSIC";
 	audio_entity.file_name = "C:\\GameAssets\\deus-ex-ambient.mp3";
+
+	//Graphics
+	StaticEntity static_entity;
+	static_entity.id = "TRIANGLE";
+
+	Vertex vertex;
+	vertex.position = glm::vec3(1.0f, 1.0f, 0.0f);
+	vertex.color = glm::vec3(1.0f, 0.0f, 0.0f);
+	static_entity.vertices.push_back(vertex);
+
+	vertex.position = glm::vec3(-1.0f, 1.0f, 0.0f);
+	vertex.color = glm::vec3(0.0f, 1.0f, 0.0f);
+	static_entity.vertices.push_back(vertex);
+
+	vertex.position = glm::vec3(0.0f, -1.0f, 0.0f);
+	vertex.color = glm::vec3(0.0f, 0.0f, 1.0f);
+	static_entity.vertices.push_back(vertex);
+
 
 	bool app_is_running = true;
 	do

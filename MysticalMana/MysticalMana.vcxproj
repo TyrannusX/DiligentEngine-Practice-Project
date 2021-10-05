@@ -161,7 +161,14 @@
     <ClInclude Include="GlfwWindowDestroyer.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="RendererManager.h" />
+    <ClInclude Include="StaticEntity.h" />
+    <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.glsl" />
+    <None Include="varying.def.sc" />
+    <None Include="vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
