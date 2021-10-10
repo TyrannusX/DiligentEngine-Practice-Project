@@ -37,13 +37,14 @@ void Application::Run()
 	vertex.color = glm::vec3(0.0f, 0.0f, 1.0f);
 	static_entity.vertices.push_back(vertex);
 
+	static_entity.vertex_buffer_handle = renderer_manager_->CreateVertexBuffer(static_entity.vertices);
 
 	bool app_is_running = true;
 	do
 	{
 		app_is_running = !window_->Poll();
 		audio_manager_->PlayAudio(audio_entity);
-		renderer_manager_->PaintNextFrame();
+		renderer_manager_->PaintNextFrame(static_entity);
 	} 
 	while (app_is_running);
 }

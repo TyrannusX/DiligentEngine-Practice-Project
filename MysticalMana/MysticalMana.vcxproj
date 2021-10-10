@@ -166,7 +166,10 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bgfx_shader.sh" />
+    <None Include="common.sh" />
     <None Include="fragment.glsl" />
+    <None Include="shaderlib.sh" />
     <None Include="varying.def.sc" />
     <None Include="vertex.glsl" />
   </ItemGroup>

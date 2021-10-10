@@ -2,6 +2,7 @@ $input v_color0
 
 #include "common.sh"
 
-void main() {
+void main() 
+{
     gl_FragColor = v_color0;
 }
