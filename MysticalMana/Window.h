@@ -2,6 +2,8 @@
 #include <GLFW\glfw3.h>
 #include <memory>
 #include <string>
+#include <vector>
+#include "UserInputEvents.h"
 #include "GlfwWindowDestroyer.h"
 
 class Window
@@ -10,7 +12,9 @@ class Window
 		Window(int width_in, int height_in, std::string title_in);
 		~Window();
 		bool Poll();
-		std::unique_ptr<GLFWwindow, GlfwWindowDestroyer>& GetUnderlyingWindow();
+		GLFWwindow* GetUnderlyingWindow();
+		std::vector<UserInputEvents> UserInputCheck();
+
 	private:
 		int width_;
 		int height_;

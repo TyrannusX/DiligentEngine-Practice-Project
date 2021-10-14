@@ -1,13 +1,31 @@
 #include "InputManager.h"
 #include <iostream>
 
-void InputManager::KeyCallback(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods)
+InputManager::InputManager(Window* window)
 {
-	std::cout << "Key pressed!!" << std::endl;
+	underlyind_window_ = window->GetUnderlyingWindow();
 }
 
-InputManager::InputManager(std::unique_ptr<Window>& window)
+std::vector<UserInputEvents> InputManager::UserInputCheck()
 {
-	std::unique_ptr<GLFWwindow, GlfwWindowDestroyer>& underlyingWindow = window->GetUnderlyingWindow();
-	glfwSetKeyCallback(underlyingWindow.get(), KeyCallback);
+	std::vector<UserInputEvents> events;
+
+	if (glfwGetKey(underlyind_window_, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kLeft);
+	}
+	if (glfwGetKey(underlyind_window_, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kRight);
+	}
+	if (glfwGetKey(underlyind_window_, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kUp);
+	}
+	if (glfwGetKey(underlyind_window_, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kLeft);
+	}
+
+	return events;
 }

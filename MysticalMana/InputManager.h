@@ -1,12 +1,17 @@
 #pragma once
 #include <memory>
 #include <GLFW\glfw3.h>
+#include <vector>
+#include "UserInputEvents.h"
 #include "Window.h"
+#include "GlfwWindowDestroyer.h"
 
 class InputManager
 {
 	public:
-		InputManager(std::unique_ptr<Window>& window);
-		static void KeyCallback(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods);
+		InputManager(Window* window);
+		std::vector<UserInputEvents> UserInputCheck();
+	private:
+		GLFWwindow* underlyind_window_;
 };
 

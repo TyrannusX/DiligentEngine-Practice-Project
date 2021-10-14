@@ -162,6 +162,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="RendererManager.h" />
     <ClInclude Include="StaticEntity.h" />
+    <ClInclude Include="UserInputEvents.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

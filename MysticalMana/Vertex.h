@@ -1,9 +1,9 @@
 #pragma once
-#include <glm/vec3.hpp>
-
 struct Vertex
 {
-	glm::vec3 position;
-	glm::vec3 color;
+	float position_x;
+	float position_y;
+	float position_z;
+	uint32_t abgr;
 };
 

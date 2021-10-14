@@ -3,11 +3,12 @@
 #include "Vertex.h"
 #include <glm/vec3.hpp>
 #include <bgfx/bgfx.h>
-#include <vector>
 
 struct StaticEntity : BaseEntity
 {
-	std::vector<Vertex> vertices;
+	Vertex* vertices;
+	uint16_t* indices;
 	bgfx::VertexBufferHandle vertex_buffer_handle;
+	bgfx::IndexBufferHandle index_buffer_handle;
 };
 

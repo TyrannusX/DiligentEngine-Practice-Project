@@ -34,7 +34,31 @@ bool Window::Poll()
 	return shouldCloseWindow;
 }
 
-std::unique_ptr<GLFWwindow, GlfwWindowDestroyer>& Window::GetUnderlyingWindow()
+GLFWwindow* Window::GetUnderlyingWindow()
 {
-	return glfw_window_;
+	return glfw_window_.get();
+}
+
+std::vector<UserInputEvents> Window::UserInputCheck()
+{
+	std::vector<UserInputEvents> events;
+
+	if (glfwGetKey(glfw_window_.get(), GLFW_KEY_LEFT) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kLeft);
+	}
+	if (glfwGetKey(glfw_window_.get(), GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kRight);
+	}
+	if (glfwGetKey(glfw_window_.get(), GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kUp);
+	}
+	if (glfwGetKey(glfw_window_.get(), GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kDown);
+	}
+
+	return events;
 }
