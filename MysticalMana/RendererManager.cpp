@@ -13,11 +13,9 @@
 #include "Vertex.h"
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
-#include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
 #include <fstream>
 #include <exception>
-#include <bx/math.h>
+#include <cstring>
 
 RendererManager::RendererManager(Window* window)
 {
@@ -27,155 +25,193 @@ RendererManager::RendererManager(Window* window)
 	int windowHeight;
 	glfwGetWindowSize(underlyingWindow, &windowWidth, &windowHeight);
 	HWND nativeOsWindow = glfwGetWin32Window(underlyingWindow);
-	
-	//IMPORTANT: this call forces BGFX to use same thread as window
-	//bgfx::renderFrame();
 
-	bgfx::Init initParameters;
-	initParameters.type = bgfx::RendererType::Direct3D11;
-	initParameters.vendorId = BGFX_PCI_ID_NVIDIA;
-	initParameters.resolution.width = (uint32_t)windowWidth;
-	initParameters.resolution.height = (uint32_t)windowHeight;
-	initParameters.resolution.reset = BGFX_RESET_VSYNC;
-	initParameters.platformData.nwh = nativeOsWindow;
-	initParameters.callback = &callbacker;
-	bgfx::init(initParameters);
-
-	vertex_layout_
-		.begin()
-		.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-		.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-		.end();
-
-	bgfx::setDebug(BGFX_DEBUG_TEXT);
 
 	view_width_ = (uint16_t)windowWidth;
 	view_height_ = (uint16_t)windowHeight;
-	bgfx::reset(view_width_, view_height_, BGFX_RESET_VSYNC);
-	bgfx::setViewRect(0, 0, 0, view_width_, view_height_);
-	bgfx::touch(0);
-	bgfx::setViewClear(0
-		, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-		, 0x443355FF
-		, 1.0f
-		, 0
-	);
-	bgfx::dbgTextPrintf(0, 1, 0x0f, "Mystical Mana Debug Build\0");
-	bgfx::frame();
 
-	shader_program_handle_ = LoadShaderProgram("vertex.bin", "fragment.bin");
+	createInstance();
+	setupDebugMessenger();
+	pickPhysicalDevice();
 }
 
 RendererManager::~RendererManager()
 {
-	bgfx::shutdown();
+	if (enable_validation_layers)
+	{
+		DestroyDebugUtilsMessengerEXT(vk_instance_, debug_messenger_, nullptr);
+	}
+	vkDestroyInstance(vk_instance_, nullptr);
 }
 
 void RendererManager::PaintNextFrame(StaticEntity& static_entity, int x_modifier, int y_modifier)
 {
-	/*
-	* Imagine moving the camera around the world.
-	* Define the camera's position.
-	* This is the view matrix
-	*/
-	const bx::Vec3 camera_looks_at = { 0.0f, 0.0f, 0.0f };
-	const bx::Vec3 camera_position = { 0.0f, 0.0f, 1.0f };
-	float view_matrix[16];
-	bx::mtxLookAt(view_matrix, camera_position, camera_looks_at);
-
-	/*
-	* Once the camera is positioned, imagine adjusting the lens settings.
-	* Such as controling the zoom levels and focus.
-	* This is the projection matrix
-	*/
-	float projection_matrix[16];
-	bx::mtxProj(projection_matrix, 60.0f, float(view_width_)/float(view_height_), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-
-	/*
-	* Define translation matrix for primitives
-	*/
-	float translation_matrix[16];
-	bx::mtxRotateY(translation_matrix, 0.0f);
-	translation_matrix[12] = 0.0f;
-	translation_matrix[13] = 0.0f;
-	translation_matrix[14] = 0.0f;
-
-	bgfx::touch(0);
-	bgfx::setViewTransform(0, view_matrix, projection_matrix);
-	/*bgfx::setViewRect(0, 0, 0, view_width_, view_height_);*/
-	bgfx::setTransform(translation_matrix);
-	bgfx::setVertexBuffer(0, static_entity.vertex_buffer_handle);
-	bgfx::setIndexBuffer(static_entity.index_buffer_handle);
-	bgfx::setState(BGFX_STATE_DEFAULT);
-	bgfx::submit(0, shader_program_handle_);
-	bgfx::dbgTextClear();
-	bgfx::dbgTextPrintf(0, 1, 0x0f, "Mystical Mana Debug Build\0");
-
-	bgfx::frame();
 }
 
-bgfx::VertexBufferHandle RendererManager::CreateVertexBuffer(Vertex* vertices)
+void RendererManager::createInstance()
 {
-	return bgfx::createVertexBuffer(
-		bgfx::makeRef(
-			vertices,
-			sizeof(vertices)
-		),
-		vertex_layout_
-	);
-}
-
-bgfx::IndexBufferHandle RendererManager::CreateIndexBuffer(uint16_t* indices)
-{
-	return bgfx::createIndexBuffer(
-		bgfx::makeRef(
-			indices,
-			sizeof(indices)
-		)
-	);
-}
-
-bgfx::ProgramHandle RendererManager::LoadShaderProgram(std::string vertex_shader_path, std::string fragment_shader_path)
-{
-	char* vertex_shader_data = new char[2048];
-	std::ifstream vertex_shader_file_handle;
-	size_t vertex_shader_file_size;
-	vertex_shader_file_handle.open(vertex_shader_path);
-
-	if (!vertex_shader_file_handle.is_open())
-	{
-		throw std::exception("Failed to open vertex shader file");
+	if(enable_validation_layers && !checkValidationLayerSupport())
+	{ 
+		throw std::exception("Failed check of validation layer support");
 	}
 
-	vertex_shader_file_handle.seekg(0, std::ios::end);
-	vertex_shader_file_size = vertex_shader_file_handle.tellg();
-	vertex_shader_file_handle.seekg(0, std::ios::beg);
-	vertex_shader_file_handle.read(vertex_shader_data, vertex_shader_file_size);
-	vertex_shader_file_handle.close();
-	const bgfx::Memory* vertex_shader_memory = bgfx::copy(vertex_shader_data, vertex_shader_file_size + 1);
-	vertex_shader_memory->data[vertex_shader_memory->size - 1] = '\0';
-	bgfx::ShaderHandle bgfx_vertex_handle = bgfx::createShader(vertex_shader_memory);
-	bgfx::setName(bgfx_vertex_handle, "VERTEX_SHADER");
+	VkApplicationInfo vkApplicationInfo = {};
+	vkApplicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	vkApplicationInfo.pApplicationName = "Mystical Mana";
+	vkApplicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+	vkApplicationInfo.pEngineName = "NONE";
+	vkApplicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+	vkApplicationInfo.apiVersion = VK_API_VERSION_1_2;
 
-	char* fragment_shader_data = new char[2048];
-	std::ifstream fragment_shader_file_handle;
-	size_t fragment_shader_file_size;
-	fragment_shader_file_handle.open(fragment_shader_path);
+	VkInstanceCreateInfo vkInstanceCreateInfo = {};
+	vkInstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	vkInstanceCreateInfo.pApplicationInfo = &vkApplicationInfo;
 
-	if (!fragment_shader_file_handle.is_open())
+	auto extensions = getRequiredExtensions();
+	vkInstanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+	vkInstanceCreateInfo.ppEnabledExtensionNames = extensions.data();
+
+	vkInstanceCreateInfo.enabledLayerCount = 0;
+	VkDebugUtilsMessengerCreateInfoEXT debug_create_info = {};
+	if (enable_validation_layers)
 	{
-		throw std::exception("Failed to open fragment shader file");
+		vkInstanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(validation_layers_.size());
+		vkInstanceCreateInfo.ppEnabledLayerNames = validation_layers_.data();
+		populateDebugMessengerCreateInfo(debug_create_info);
+		/*vkInstanceCreateInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debug_create_info;*/
 	}
 
-	fragment_shader_file_handle.seekg(0, std::ios::end);
-	fragment_shader_file_size = fragment_shader_file_handle.tellg();
-	fragment_shader_file_handle.seekg(0, std::ios::beg);
-	fragment_shader_file_handle.read(fragment_shader_data, fragment_shader_file_size);
-	fragment_shader_file_handle.close();
-	const bgfx::Memory* fragment_shader_memory = bgfx::copy(fragment_shader_data, fragment_shader_file_size + 1);
-	fragment_shader_memory->data[fragment_shader_memory->size - 1] = '\0';
-	bgfx::ShaderHandle bgfx_fragment_handle = bgfx::createShader(fragment_shader_memory);
-	bgfx::setName(bgfx_fragment_handle, "FRAGMENT_SHADER");
+	if (vkCreateInstance(&vkInstanceCreateInfo, nullptr, &vk_instance_) != VK_SUCCESS)
+	{
+		throw std::exception("Failed to create vulkan instance");
+	}
+}
 
-	return bgfx::createProgram(bgfx_vertex_handle, bgfx_fragment_handle, true);
+bool RendererManager::checkValidationLayerSupport()
+{
+	uint32_t layer_count;
+	vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+
+	std::vector<VkLayerProperties> available_layers(layer_count);
+	vkEnumerateInstanceLayerProperties(&layer_count, available_layers.data());
+
+	for (const char* layer_name : validation_layers_)
+	{
+		bool layer_found = false;
+
+		for (const auto& layer_properties : available_layers)
+		{
+			if (strcmp(layer_name, layer_properties.layerName) == 0)
+			{
+				layer_found = true;
+				break;
+			}
+		}
+
+		if (!layer_found)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void RendererManager::setupDebugMessenger()
+{
+	if (!enable_validation_layers)
+	{
+		return;
+	}
+
+	VkDebugUtilsMessengerCreateInfoEXT createInfo;
+	populateDebugMessengerCreateInfo(createInfo);
+
+	if (CreateDebugUtilsMessengerEXT(vk_instance_, &createInfo, nullptr, &debug_messenger_) != VK_SUCCESS)
+	{
+		throw std::exception("Failed to create vulkan layer debug messenger");
+	}
+}
+
+void RendererManager::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
+{
+	createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+	createInfo.pfnUserCallback = nullptr;
+}
+
+std::vector<const char*> RendererManager::getRequiredExtensions()
+{
+	uint32_t glfwExtensionCount = 0;
+	const char** glfwExtensions;
+	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+	std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+	extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+	return extensions;
+}
+
+void RendererManager::pickPhysicalDevice()
+{
+	uint32_t device_count = 0;
+	vkEnumeratePhysicalDevices(vk_instance_, &device_count, nullptr);
+
+	if (device_count < 1)
+	{
+		throw std::exception("Failed to find any physical GPUs to use with Vulkan");
+	}
+
+	std::vector<VkPhysicalDevice> devices(device_count);
+	vkEnumeratePhysicalDevices(vk_instance_, &device_count, devices.data());
+
+	for (const auto& device : devices)
+	{
+		if (isDeviceSuitable(device))
+		{
+			vk_physical_device_ = device;
+			break;
+		}
+	}
+
+	if (vk_physical_device_ == VK_NULL_HANDLE)
+	{
+		throw std::exception("Failed to find suitable GPU");
+	}
+}
+
+bool RendererManager::isDeviceSuitable(VkPhysicalDevice device)
+{
+	VkPhysicalDeviceProperties device_properties;
+	vkGetPhysicalDeviceProperties(device, &device_properties);
+	return device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+}
+
+QueueFamilyIndices RendererManager::findQueueFamilies(VkPhysicalDevice device)
+{
+	throw std::exception();
+}
+
+VkResult RendererManager::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger)
+{
+	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(vk_instance_, "vkCreateDebugUtilsMessengerEXT");
+
+	if (func != nullptr)
+	{
+		return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+	}
+	else
+	{
+		return VK_ERROR_EXTENSION_NOT_PRESENT;
+	}
+}
+
+void RendererManager::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator)
+{
+	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(vk_instance_, "vkDestroyDebugUtilsMessengerEXT");
+	if (func != nullptr)
+	{
+		func(instance, debugMessenger, pAllocator);
+	}
 }

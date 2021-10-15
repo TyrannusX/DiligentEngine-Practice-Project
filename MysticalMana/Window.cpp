@@ -12,18 +12,20 @@ Window::Window(int width_in, int height_in, std::string title_in)
 		throw std::exception("Failed to initialize GLFW");
 	}
 
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 	glfw_window_ = std::unique_ptr<GLFWwindow, GlfwWindowDestroyer>(glfwCreateWindow(width_, height_, title_.c_str(), nullptr, nullptr));
 	if (!glfw_window_)
 	{
 		glfwTerminate();
 		throw std::exception("Failed to create GLFW window");
 	}
-
-	glfwMakeContextCurrent(glfw_window_.get());
 }
 
 Window::~Window()
 {
+	glfwDestroyWindow(glfw_window_.get());
 	glfwTerminate();
 }
 

@@ -4,7 +4,14 @@
 
 int main()
 {
-	std::unique_ptr<Application> game(new Application());
-	game->Run();
+	try
+	{
+		std::unique_ptr<Application> game(new Application());
+		game->Run();
+	}
+	catch (const std::exception& ex)
+	{
+		std::cerr << ex.what() << std::endl;
+	}
 	return 0;
 }
