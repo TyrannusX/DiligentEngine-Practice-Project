@@ -52,9 +52,6 @@ void Application::Run()
 	static_entity.indices[1] = 1;
 	static_entity.indices[2] = 2;
 
-	static_entity.vertex_buffer_handle = renderer_manager_->CreateVertexBuffer(static_entity.vertices);
-	static_entity.index_buffer_handle = renderer_manager_->CreateIndexBuffer(static_entity.indices);
-
 	bool app_is_running = true;
 	int x = 0;
 	int y = 0;

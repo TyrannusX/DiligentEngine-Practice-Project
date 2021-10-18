@@ -1,3 +1,5 @@
+#define PLATFORM_WIN32 1
+
 #include <iostream>
 #include <memory>
 #include "Application.h"

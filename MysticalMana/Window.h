@@ -1,4 +1,10 @@
 #pragma once
+
+/*
+* No graphics API needed
+*/
+#define GLFW_NO_API
+
 #include <GLFW\glfw3.h>
 #include <memory>
 #include <string>

@@ -19,7 +19,7 @@ Window::Window(int width_in, int height_in, std::string title_in)
 		throw std::exception("Failed to create GLFW window");
 	}
 
-	glfwMakeContextCurrent(glfw_window_.get());
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 }
 
 Window::~Window()
