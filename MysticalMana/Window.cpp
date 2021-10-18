@@ -12,14 +12,19 @@ Window::Window(int width_in, int height_in, std::string title_in)
 		throw std::exception("Failed to initialize GLFW");
 	}
 
+	/*
+	* IMPORTANT
+	* Explicitly tell GLFW to not create an OpenGL/Vulkan context itself.
+	* This breaks Diligent's contexts
+	*/
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
 	glfw_window_ = std::unique_ptr<GLFWwindow, GlfwWindowDestroyer>(glfwCreateWindow(width_, height_, title_.c_str(), nullptr, nullptr));
 	if (!glfw_window_)
 	{
 		glfwTerminate();
 		throw std::exception("Failed to create GLFW window");
 	}
-
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 }
 
 Window::~Window()
