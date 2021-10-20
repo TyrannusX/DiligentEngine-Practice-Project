@@ -1,11 +1,15 @@
 #pragma once
 #include "BaseEntity.h"
 #include "Vertex.h"
-#include <glm/vec3.hpp>
+#include <Buffer.h>
+#include <BasicTypes.h>
+#include <RefCntAutoPtr.hpp>
 
 struct StaticEntity : BaseEntity
 {
 	Vertex* vertices;
-	uint16_t* indices;
+	Diligent::Uint32* indices;
+	Diligent::RefCntAutoPtr<Diligent::IBuffer> vertex_buffer;
+	Diligent::RefCntAutoPtr<Diligent::IBuffer> index_buffer;
 };
 

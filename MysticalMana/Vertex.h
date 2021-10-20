@@ -1,9 +1,15 @@
 #pragma once
+#include <BasicMath.hpp>
+
+/*
+* Representation of a vertex.
+* 
+* IMPORTANT NOTE
+* This struct must match the struct found in the shader.
+*/
 struct Vertex
 {
-	float position_x;
-	float position_y;
-	float position_z;
-	uint32_t abgr;
+	Diligent::float3 position;
+	Diligent::float4 color;
 };
 

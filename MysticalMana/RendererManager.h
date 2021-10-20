@@ -13,7 +13,8 @@
 #include <RenderDevice.h>
 #include <DeviceContext.h>
 #include <SwapChain.h>
-
+#include <BasicMath.hpp>
+#include <MapHelper.hpp>
 
 class RendererManager
 {
@@ -49,11 +50,35 @@ class RendererManager
 		*/
 		Diligent::RENDER_DEVICE_TYPE render_device_type = Diligent::RENDER_DEVICE_TYPE_VULKAN;
 
+		/*
+		* Define uniform buffer.
+		*
+		* Uniform buffers contain uniform data.
+		* Uniform data act as global variables in the shader/pipeline world.
+		* With each invocation of the pipeline, these DO NOT change.
+		*/
+		Diligent::RefCntAutoPtr<Diligent::IBuffer> uniform_buffer_;
+
+		/*
+		* Shader Resource Binder
+		* 
+		* Binds data from application to shader
+		*/
+		Diligent::RefCntAutoPtr<Diligent::IShaderResourceBinding> shader_resource_binder_;
+
+		/*
+		* The world+view+projection matrix
+		*/
+		Diligent::float4x4 world_view_projection_matrix_;
+
 		bool enable_validation_ = true;
 
 	public:
 		RendererManager(Window* window);
 		~RendererManager();
 		void PaintNextFrame(StaticEntity& static_entity, int x_modifier, int y_modifier);
+		Diligent::RefCntAutoPtr<Diligent::IBuffer> CreateVertexBuffer(StaticEntity& staticEntity);
+		Diligent::RefCntAutoPtr<Diligent::IBuffer> CreateIndexBuffer(StaticEntity& staticEntity);
+
 };
 
