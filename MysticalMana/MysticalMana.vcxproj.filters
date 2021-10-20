@@ -70,10 +70,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertex.glsl">
+    <None Include="vertex.hlsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="fragment.glsl">
+    <None Include="fragment.hlsl">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="varying.def.sc">

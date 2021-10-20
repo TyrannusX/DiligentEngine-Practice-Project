@@ -169,10 +169,10 @@
   <ItemGroup>
     <None Include="bgfx_shader.sh" />
     <None Include="common.sh" />
-    <None Include="fragment.glsl" />
+    <None Include="fragment.hlsl" />
     <None Include="shaderlib.sh" />
     <None Include="varying.def.sc" />
-    <None Include="vertex.glsl" />
+    <None Include="vertex.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
