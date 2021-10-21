@@ -68,7 +68,7 @@ RendererManager::RendererManager(Window* window)
 	* If enabled, fragments are discarded if they
 	* are drawn behind another fragment.
 	*/
-	pipelineCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable = true;
+	pipelineCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable = Diligent::True;
 
 	//Create a shader source stream factory to read shaders from file
 	Diligent::RefCntAutoPtr<Diligent::IShaderSourceInputStreamFactory> streamFactory;
@@ -192,7 +192,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity, int x_modifier
 	* buffers to their proper state automatically.
 	* The final flag tells Diligent to reset/drop previous vertex buffers.
 	*/
-	Diligent::Uint64 offset = 0;
+	const Diligent::Uint64 offset = 0;
 	Diligent::IBuffer* buffers[] = { static_entity.vertex_buffer };
 	immediate_context_->SetVertexBuffers(0, 1, buffers, &offset, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION, Diligent::SET_VERTEX_BUFFERS_FLAG_RESET);
 
@@ -230,6 +230,71 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity, int x_modifier
 
 	//Use the swap chain to flip the back buffer to the front buffer (front gets moved to back)
 	swap_chain_->Present();
+}
+
+void RendererManager::UpdateEntity()
+{
+	//Update the world_view_projection matrix
+
+	//Rotate
+	Diligent::float4x4 modelTransform = Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
+
+	//Move the view (Camera/your eye/whatever) to desired spot in world
+	Diligent::float4x4 cameraTransform = Diligent::float4x4::Translation(0.0f, 0.0f, 5.0f);
+
+	//Get the surface pretransform matrix (this is the APIs original transformation relative to this orientation/axis system)
+	const auto& swapChainDesc = swap_chain_->GetDesc();
+	Diligent::float4x4 preTransformMatrix;
+	switch (swapChainDesc.PreTransform)
+	{
+		case Diligent::SURFACE_TRANSFORM_ROTATE_90:
+			preTransformMatrix = Diligent::float4x4::RotationArbitrary(Diligent::float3(0, 0, 1), -Diligent::PI_F / 2.0f);
+			break;
+		case Diligent::SURFACE_TRANSFORM_ROTATE_180:
+			preTransformMatrix = Diligent::float4x4::RotationArbitrary(Diligent::float3(0, 0, 1), -Diligent::PI_F);
+			break;
+		case Diligent::SURFACE_TRANSFORM_ROTATE_270:
+			preTransformMatrix = Diligent::float4x4::RotationArbitrary(Diligent::float3(0, 0, 1), -Diligent::PI_F * 3.0f / 2.0f);
+			break;
+		case Diligent::SURFACE_TRANSFORM_OPTIMAL:
+			preTransformMatrix = Diligent::float4x4::Identity();
+			break;
+		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR:
+		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90:
+		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180:
+		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270:
+			preTransformMatrix = Diligent::float4x4::Identity();
+			break;
+		default:
+			preTransformMatrix = Diligent::float4x4::Identity();
+			break;
+	}
+
+	//Get the projection matrix (projection is like messing with camera lens settings like zoom)
+	float aspectRatio = static_cast<float>(swapChainDesc.Width) / static_cast<float>(swapChainDesc.Height);
+	float x_scale;
+	float y_scale;
+	if (swapChainDesc.PreTransform == Diligent::SURFACE_TRANSFORM_ROTATE_90 ||
+		swapChainDesc.PreTransform == Diligent::SURFACE_TRANSFORM_ROTATE_270 ||
+		swapChainDesc.PreTransform == Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90 ||
+		swapChainDesc.PreTransform == Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270)
+	{
+		x_scale = 1.0f / std::tan((Diligent::PI_F / 4.0f) / 2.0f);
+		y_scale = x_scale * aspectRatio;
+	}
+	else
+	{
+		y_scale = 1.0f / std::tan((Diligent::PI_F / 4.0f) / 2.0f);
+		x_scale = y_scale / aspectRatio;
+	}
+
+	Diligent::float4x4 projection;
+	projection._11 = x_scale;
+	projection._22 = y_scale;
+	projection.SetNearFarClipPlanes(0.1f, 100.0f, render_device_->GetDeviceInfo().IsGLDevice());
+
+	//Calculate the world_view_projection_matrix
+	world_view_projection_matrix_ = modelTransform * cameraTransform * preTransformMatrix * projection;
 }
 
 Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateVertexBuffer(StaticEntity & staticEntity)

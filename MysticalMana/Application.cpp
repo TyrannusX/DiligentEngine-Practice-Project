@@ -109,6 +109,7 @@ void Application::Run()
 		}
 
 		audio_manager_->PlayAudio(audio_entity);
+		renderer_manager_->UpdateEntity();
 		renderer_manager_->PaintNextFrame(static_entity, x, y);
 	} 
 	while (app_is_running);

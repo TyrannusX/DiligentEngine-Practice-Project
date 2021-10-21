@@ -12,7 +12,7 @@ struct VSInput
 struct PSInput
 {
     float4 Pos: SV_POSITION;
-    float4 Color: COLOR;
+    float4 Color: COLOR0;
 };
 
 void main(in VSInput VSIn, out PSInput PSIn)
