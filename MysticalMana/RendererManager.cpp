@@ -303,11 +303,11 @@ Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateVertexBuffer(S
 	bufferDesc.Name = "Mystical Mana Vertex Buffer";
 	bufferDesc.Usage = Diligent::USAGE_IMMUTABLE;
 	bufferDesc.BindFlags = Diligent::BIND_VERTEX_BUFFER;
-	bufferDesc.Size = sizeof(staticEntity.vertices);
+	bufferDesc.Size = staticEntity.vertices.size() * sizeof(Vertex);
 
 	Diligent::BufferData bufferData;
-	bufferData.pData = staticEntity.vertices;
-	bufferData.DataSize = sizeof(staticEntity.vertices);
+	bufferData.pData = staticEntity.vertices.data();
+	bufferData.DataSize = staticEntity.vertices.size() * sizeof(Vertex);
 
 	Diligent::RefCntAutoPtr<Diligent::IBuffer> buffer;
 	render_device_->CreateBuffer(bufferDesc, &bufferData, &buffer);
@@ -320,11 +320,11 @@ Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateIndexBuffer(St
 	bufferDesc.Name = "Mystical Mana Index Buffer";
 	bufferDesc.Usage = Diligent::USAGE_IMMUTABLE;
 	bufferDesc.BindFlags = Diligent::BIND_INDEX_BUFFER;
-	bufferDesc.Size = sizeof(staticEntity.indices);
+	bufferDesc.Size = staticEntity.indices.size() * sizeof(Diligent::Uint32);
 
 	Diligent::BufferData bufferData;
-	bufferData.pData = staticEntity.indices;
-	bufferData.DataSize = sizeof(staticEntity.indices);
+	bufferData.pData = staticEntity.indices.data();
+	bufferData.DataSize = staticEntity.indices.size() * sizeof(Diligent::Uint32);
 
 	Diligent::RefCntAutoPtr<Diligent::IBuffer> buffer;
 	render_device_->CreateBuffer(bufferDesc, &bufferData, &buffer);

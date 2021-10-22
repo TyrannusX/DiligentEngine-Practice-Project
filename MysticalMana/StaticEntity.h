@@ -4,11 +4,12 @@
 #include <Buffer.h>
 #include <BasicTypes.h>
 #include <RefCntAutoPtr.hpp>
+#include <vector>
 
 struct StaticEntity : BaseEntity
 {
-	Vertex* vertices;
-	Diligent::Uint32* indices;
+	std::vector<Vertex> vertices;
+	std::vector<Diligent::Uint32> indices;
 	Diligent::RefCntAutoPtr<Diligent::IBuffer> vertex_buffer;
 	Diligent::RefCntAutoPtr<Diligent::IBuffer> index_buffer;
 };
