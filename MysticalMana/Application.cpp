@@ -82,8 +82,7 @@ void Application::Run()
 	static_entity.index_buffer = renderer_manager_->CreateIndexBuffer(static_entity);
 
 	bool app_is_running = true;
-	int x = 0;
-	int y = 0;
+	Diligent::Vector3<float> cameraVector(0.0f, 0.0f, 5.0f);
 
 	do
 	{
@@ -92,24 +91,32 @@ void Application::Run()
 
 		if (std::find(events.begin(), events.end(), UserInputEvents::kLeft) != events.end())
 		{
-			x -= 1;
+			cameraVector.x += 1;
 		}
 		if (std::find(events.begin(), events.end(), UserInputEvents::kRight) != events.end())
 		{
-			x += 1;
+			cameraVector.x -= 1;
 		}
 		if (std::find(events.begin(), events.end(), UserInputEvents::kUp) != events.end())
 		{
-			y -= 1;
+			cameraVector.z -= 1;
 		}
 		if (std::find(events.begin(), events.end(), UserInputEvents::kDown) != events.end())
 		{
-			y += 1;
+			cameraVector.z += 1;
+		}
+		if (std::find(events.begin(), events.end(), UserInputEvents::kS) != events.end())
+		{
+			cameraVector.y += 1;
+		}
+		if (std::find(events.begin(), events.end(), UserInputEvents::kW) != events.end())
+		{
+			cameraVector.y -= 1;
 		}
 
 		audio_manager_->PlayAudio(audio_entity);
-		renderer_manager_->UpdateEntity();
-		renderer_manager_->PaintNextFrame(static_entity, x, y);
+		renderer_manager_->UpdateWorld(cameraVector);
+		renderer_manager_->PaintNextFrame(static_entity);
 	} 
 	while (app_is_running);
 }

@@ -153,7 +153,7 @@ RendererManager::~RendererManager()
 
 }
 
-void RendererManager::PaintNextFrame(StaticEntity& static_entity, int x_modifier, int y_modifier)
+void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 {
 	//
 	//Define the color to use for the render target background
@@ -232,45 +232,18 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity, int x_modifier
 	swap_chain_->Present();
 }
 
-void RendererManager::UpdateEntity()
+void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector)
 {
 	//Update the world_view_projection matrix
 
 	//Rotate
-	Diligent::float4x4 modelTransform = Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
+	Diligent::float4x4 worldMatrix = Diligent::float4x4::Translation(5.0f, 0.0f, 0.0f);
 
 	//Move the view (Camera/your eye/whatever) to desired spot in world
-	Diligent::float4x4 cameraTransform = Diligent::float4x4::Translation(0.0f, 0.0f, 5.0f);
-
-	//Get the surface pretransform matrix (this is the APIs original transformation relative to this orientation/axis system)
-	const auto& swapChainDesc = swap_chain_->GetDesc();
-	Diligent::float4x4 preTransformMatrix;
-	switch (swapChainDesc.PreTransform)
-	{
-		case Diligent::SURFACE_TRANSFORM_ROTATE_90:
-			preTransformMatrix = Diligent::float4x4::RotationArbitrary(Diligent::float3(0, 0, 1), -Diligent::PI_F / 2.0f);
-			break;
-		case Diligent::SURFACE_TRANSFORM_ROTATE_180:
-			preTransformMatrix = Diligent::float4x4::RotationArbitrary(Diligent::float3(0, 0, 1), -Diligent::PI_F);
-			break;
-		case Diligent::SURFACE_TRANSFORM_ROTATE_270:
-			preTransformMatrix = Diligent::float4x4::RotationArbitrary(Diligent::float3(0, 0, 1), -Diligent::PI_F * 3.0f / 2.0f);
-			break;
-		case Diligent::SURFACE_TRANSFORM_OPTIMAL:
-			preTransformMatrix = Diligent::float4x4::Identity();
-			break;
-		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR:
-		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90:
-		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180:
-		case Diligent::SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270:
-			preTransformMatrix = Diligent::float4x4::Identity();
-			break;
-		default:
-			preTransformMatrix = Diligent::float4x4::Identity();
-			break;
-	}
+	Diligent::float4x4 cameraMatrix = Diligent::float4x4::Translation(cameraVector.x, cameraVector.y, cameraVector.z);
 
 	//Get the projection matrix (projection is like messing with camera lens settings like zoom)
+	Diligent::SwapChainDesc swapChainDesc = swap_chain_->GetDesc();
 	float aspectRatio = static_cast<float>(swapChainDesc.Width) / static_cast<float>(swapChainDesc.Height);
 	float x_scale;
 	float y_scale;
@@ -288,13 +261,13 @@ void RendererManager::UpdateEntity()
 		x_scale = y_scale / aspectRatio;
 	}
 
-	Diligent::float4x4 projection;
-	projection._11 = x_scale;
-	projection._22 = y_scale;
-	projection.SetNearFarClipPlanes(0.1f, 100.0f, render_device_->GetDeviceInfo().IsGLDevice());
+	Diligent::float4x4 projectionMatrix;
+	projectionMatrix._11 = x_scale;
+	projectionMatrix._22 = y_scale;
+	projectionMatrix.SetNearFarClipPlanes(0.1f, 100.0f, render_device_->GetDeviceInfo().IsGLDevice());
 
 	//Calculate the world_view_projection_matrix
-	world_view_projection_matrix_ = modelTransform * cameraTransform * preTransformMatrix * projection;
+	world_view_projection_matrix_ = worldMatrix * cameraMatrix * projectionMatrix;
 }
 
 Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateVertexBuffer(StaticEntity & staticEntity)

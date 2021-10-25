@@ -5,4 +5,6 @@ enum class UserInputEvents
 	kRight,
 	kUp,
 	kDown,
+	kW,
+	kS,
 };

@@ -64,6 +64,14 @@ std::vector<UserInputEvents> Window::UserInputCheck()
 	{
 		events.push_back(UserInputEvents::kDown);
 	}
+	if (glfwGetKey(glfw_window_.get(), GLFW_KEY_W) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kW);
+	}
+	if (glfwGetKey(glfw_window_.get(), GLFW_KEY_S) == GLFW_PRESS)
+	{
+		events.push_back(UserInputEvents::kS);
+	}
 
 	return events;
 }

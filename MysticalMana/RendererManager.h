@@ -76,8 +76,8 @@ class RendererManager
 	public:
 		RendererManager(Window* window);
 		~RendererManager();
-		void UpdateEntity();
-		void PaintNextFrame(StaticEntity& static_entity, int x_modifier, int y_modifier);
+		void UpdateWorld(Diligent::Vector3<float> cameraVector);
+		void PaintNextFrame(StaticEntity& static_entity);
 		Diligent::RefCntAutoPtr<Diligent::IBuffer> CreateVertexBuffer(StaticEntity& staticEntity);
 		Diligent::RefCntAutoPtr<Diligent::IBuffer> CreateIndexBuffer(StaticEntity& staticEntity);
 
