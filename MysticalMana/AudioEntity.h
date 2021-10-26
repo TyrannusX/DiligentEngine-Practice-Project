@@ -4,8 +4,8 @@
 
 struct AudioEntity : BaseEntity
 {
-	std::string file_name;
-	FMOD::Sound* fmound_sound_handle;
-	bool is_audio_playing = false;
+	std::string m_file_name;
+	FMOD::Sound* m_fmound_sound_handle;
+	bool m_is_audio_playing = false;
 };
 

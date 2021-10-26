@@ -19,36 +19,36 @@
 class RendererManager
 {
 	private:
-		uint16_t view_width_;
-		uint16_t view_height_;
+		uint16_t m_view_width_;
+		uint16_t m_view_height_;
 
 		/*
 		* Virtual handle to GPU basically
 		*/
-		Diligent::RefCntAutoPtr<Diligent::IRenderDevice> render_device_;
+		Diligent::RefCntAutoPtr<Diligent::IRenderDevice> m_render_device_;
 
 		/*
 		* Handle to graphics context. Basically wraps stuff like
 		* Buffers, shaders, etc
 		*/
-		Diligent::RefCntAutoPtr<Diligent::IDeviceContext> immediate_context_;
+		Diligent::RefCntAutoPtr<Diligent::IDeviceContext> m_immediate_context_;
 
 		/*
 		* Manages the process of painting an image (back buffer) and flipping it
 		* to display to the user on screen (front buffer)
 		*/
-		Diligent::RefCntAutoPtr<Diligent::ISwapChain> swap_chain_;
+		Diligent::RefCntAutoPtr<Diligent::ISwapChain> m_swap_chain_;
 
 		/*
 		* Handle to the graphics/compute pipeline and configures the different stages and mappings
 		* to the GPU
 		*/
-		Diligent::RefCntAutoPtr<Diligent::IPipelineState> pipeline_state_;
+		Diligent::RefCntAutoPtr<Diligent::IPipelineState> m_pipeline_state_;
 
 		/*
 		* Define the device type
 		*/
-		Diligent::RENDER_DEVICE_TYPE render_device_type = Diligent::RENDER_DEVICE_TYPE_VULKAN;
+		Diligent::RENDER_DEVICE_TYPE m_render_device_type = Diligent::RENDER_DEVICE_TYPE_VULKAN;
 
 		/*
 		* Define uniform buffer.
@@ -57,19 +57,19 @@ class RendererManager
 		* Uniform data act as global variables in the shader/pipeline world.
 		* With each invocation of the pipeline, these DO NOT change.
 		*/
-		Diligent::RefCntAutoPtr<Diligent::IBuffer> uniform_buffer_;
+		Diligent::RefCntAutoPtr<Diligent::IBuffer> m_uniform_buffer_;
 
 		/*
 		* Shader Resource Binder
 		* 
 		* Binds data from application to shader
 		*/
-		Diligent::RefCntAutoPtr<Diligent::IShaderResourceBinding> shader_resource_binder_;
+		Diligent::RefCntAutoPtr<Diligent::IShaderResourceBinding> m_shader_resource_binder_;
 
 		/*
 		* The world+view+projection matrix
 		*/
-		Diligent::float4x4 world_view_projection_matrix_;
+		Diligent::float4x4 m_world_view_projection_matrix_;
 
 		bool enable_validation_ = true;
 

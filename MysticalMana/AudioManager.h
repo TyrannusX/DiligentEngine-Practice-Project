@@ -10,6 +10,6 @@ class AudioManager
 		AudioManager();
 		void PlayAudio(AudioEntity& audio_entity);
 	private:
-		FMOD::System* fmod_system_;
+		FMOD::System* m_fmod_system_;
 };
 

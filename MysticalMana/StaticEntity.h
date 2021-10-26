@@ -8,9 +8,9 @@
 
 struct StaticEntity : BaseEntity
 {
-	std::vector<Vertex> vertices;
-	std::vector<Diligent::Uint32> indices;
-	Diligent::RefCntAutoPtr<Diligent::IBuffer> vertex_buffer;
-	Diligent::RefCntAutoPtr<Diligent::IBuffer> index_buffer;
+	std::vector<Vertex> m_vertices;
+	std::vector<Diligent::Uint32> m_indices;
+	Diligent::RefCntAutoPtr<Diligent::IBuffer> m_vertex_buffer;
+	Diligent::RefCntAutoPtr<Diligent::IBuffer> m_index_buffer;
 };
 

@@ -9,7 +9,7 @@
 */
 struct Vertex
 {
-	Diligent::float3 position;
-	Diligent::float4 color;
+	Diligent::float3 m_position;
+	Diligent::float4 m_color;
 };
 

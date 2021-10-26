@@ -22,8 +22,8 @@ class Window
 		std::vector<UserInputEvents> UserInputCheck();
 
 	private:
-		int width_;
-		int height_;
-		std::string title_;
-		std::unique_ptr<GLFWwindow, GlfwWindowDestroyer> glfw_window_;
+		int m_width_;
+		int m_height_;
+		std::string m_title_;
+		std::unique_ptr<GLFWwindow, GlfwWindowDestroyer> m_glfw_window_;
 };

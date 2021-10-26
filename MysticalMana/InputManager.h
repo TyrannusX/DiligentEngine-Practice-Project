@@ -12,6 +12,6 @@ class InputManager
 		InputManager(Window* window);
 		std::vector<UserInputEvents> UserInputCheck();
 	private:
-		GLFWwindow* underlyind_window_;
+		GLFWwindow* m_underlying_window_;
 };
 

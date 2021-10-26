@@ -3,6 +3,6 @@
 
 struct BaseEntity
 {
-	std::string id;
+	std::string m_id;
 };
 

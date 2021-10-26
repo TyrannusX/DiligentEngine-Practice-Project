@@ -12,10 +12,10 @@ class Application
 		void Run();
 
 	private:
-		std::unique_ptr<Window> window_;
-		std::unique_ptr<InputManager> input_manager_;
-		std::unique_ptr<RendererManager> renderer_manager_;
-		std::unique_ptr<AudioManager> audio_manager_;
+		std::unique_ptr<Window> m_window_;
+		std::unique_ptr<InputManager> m_input_manager_;
+		std::unique_ptr<RendererManager> m_renderer_manager_;
+		std::unique_ptr<AudioManager> m_audio_manager_;
 
 };
 
