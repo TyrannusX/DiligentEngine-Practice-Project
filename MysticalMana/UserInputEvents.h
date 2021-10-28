@@ -7,4 +7,6 @@ enum class UserInputEvents
 	kDown,
 	kW,
 	kS,
+	kQ,
+	kE,
 };

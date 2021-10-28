@@ -18,6 +18,8 @@
 #include <exception>
 
 int modifier = 1;
+float scale_modifier = 1.0f;
+bool reverse_scale = false;
 
 RendererManager::RendererManager(Window* window)
 {
@@ -234,17 +236,31 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	m_swap_chain_->Present();
 }
 
-void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector)
+void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligent::Vector3<float> cameraRotationVector)
 {
 	//Calculate the transformations (translation, rotation, scale) for the world for the current model
 	Diligent::float4x4 rotation_matrix = Diligent::float4x4::RotationX(modifier * .017f);
 	modifier++;
 
+	Diligent::float4x4 scale_matrix = Diligent::float4x4::Scale(scale_modifier, scale_modifier, scale_modifier);
+
+	if (scale_modifier >= 1.0f)
+	{
+		reverse_scale = true;
+	}
+	else if (scale_modifier <= 0.0f)
+	{
+		reverse_scale = false;
+	}
+
+	reverse_scale ? scale_modifier -= 0.01f : scale_modifier += 0.01f;
+
 	//Calculate the world matrix which is where the rendered object will live relative to the origin (object space)
-	Diligent::float4x4 world_matrix = rotation_matrix * Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
+	Diligent::float4x4 world_matrix = scale_matrix * rotation_matrix * Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
 
 	//Move the view (Camera/your eye/whatever) to desired spot in world
-	Diligent::float4x4 camera_matrix = Diligent::float4x4::Translation(cameraVector.x, cameraVector.y, cameraVector.z);
+	Diligent::float4x4 camera_rotation_matrix = Diligent::float4x4::RotationY(cameraRotationVector.y);
+	Diligent::float4x4 camera_matrix = camera_rotation_matrix * Diligent::float4x4::Translation(cameraVector.x, cameraVector.y, cameraVector.z);
 
 	//Get the projection matrix (projection is like messing with camera lens settings like zoom)
 	Diligent::SwapChainDesc swap_chain_desc = m_swap_chain_->GetDesc();

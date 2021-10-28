@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "UserInputEvents.h"
 #include "GlfwWindowDestroyer.h"
 
@@ -19,7 +20,7 @@ class Window
 		~Window();
 		bool Poll();
 		GLFWwindow* GetUnderlyingWindow();
-		std::vector<UserInputEvents> UserInputCheck();
+		std::unordered_map<UserInputEvents, bool> UserInputCheck();
 
 	private:
 		int m_width_;

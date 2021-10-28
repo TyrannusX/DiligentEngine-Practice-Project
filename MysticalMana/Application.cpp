@@ -83,39 +83,48 @@ void Application::Run()
 
 	bool app_is_running = true;
 	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 5.0f);
+	Diligent::Vector3<float> camera_rotation_vector(0.0f, 0.0f, 0.0f);
 
 	do
 	{
 		app_is_running = !m_window_->Poll();
-		std::vector<UserInputEvents> events = m_window_->UserInputCheck();
+		std::unordered_map<UserInputEvents, bool> events = m_window_->UserInputCheck();
 
-		if (std::find(events.begin(), events.end(), UserInputEvents::kLeft) != events.end())
+		if (events[UserInputEvents::kLeft])
 		{
 			camera_vector.x += 1;
 		}
-		if (std::find(events.begin(), events.end(), UserInputEvents::kRight) != events.end())
+		if (events[UserInputEvents::kRight])
 		{
 			camera_vector.x -= 1;
 		}
-		if (std::find(events.begin(), events.end(), UserInputEvents::kUp) != events.end())
+		if (events[UserInputEvents::kUp])
 		{
 			camera_vector.z -= 1;
 		}
-		if (std::find(events.begin(), events.end(), UserInputEvents::kDown) != events.end())
+		if (events[UserInputEvents::kDown])
 		{
 			camera_vector.z += 1;
 		}
-		if (std::find(events.begin(), events.end(), UserInputEvents::kS) != events.end())
+		if (events[UserInputEvents::kS])
 		{
 			camera_vector.y += 1;
 		}
-		if (std::find(events.begin(), events.end(), UserInputEvents::kW) != events.end())
+		if (events[UserInputEvents::kW])
 		{
 			camera_vector.y -= 1;
 		}
+		if (events[UserInputEvents::kQ])
+		{
+			camera_rotation_vector.y += 0.01;
+		}
+		if (events[UserInputEvents::kE])
+		{
+			camera_rotation_vector.y -= 0.01;
+		}
 
 		m_audio_manager_->PlayAudio(audio_entity);
-		m_renderer_manager_->UpdateWorld(camera_vector);
+		m_renderer_manager_->UpdateWorld(camera_vector, camera_rotation_vector);
 		m_renderer_manager_->PaintNextFrame(static_entity);
 	} 
 	while (app_is_running);

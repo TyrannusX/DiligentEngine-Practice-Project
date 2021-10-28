@@ -6,25 +6,25 @@ InputManager::InputManager(Window* window)
 	m_underlying_window_ = window->GetUnderlyingWindow();
 }
 
-std::vector<UserInputEvents> InputManager::UserInputCheck()
+std::set<UserInputEvents> InputManager::UserInputCheck()
 {
-	std::vector<UserInputEvents> events;
+	std::set<UserInputEvents> events;
 
 	if (glfwGetKey(m_underlying_window_, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kLeft);
+		events.insert(UserInputEvents::kLeft);
 	}
 	if (glfwGetKey(m_underlying_window_, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kRight);
+		events.insert(UserInputEvents::kRight);
 	}
 	if (glfwGetKey(m_underlying_window_, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kUp);
+		events.insert(UserInputEvents::kUp);
 	}
 	if (glfwGetKey(m_underlying_window_, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kLeft);
+		events.insert(UserInputEvents::kLeft);
 	}
 
 	return events;

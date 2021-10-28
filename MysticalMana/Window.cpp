@@ -44,33 +44,41 @@ GLFWwindow* Window::GetUnderlyingWindow()
 	return m_glfw_window_.get();
 }
 
-std::vector<UserInputEvents> Window::UserInputCheck()
+std::unordered_map<UserInputEvents, bool> Window::UserInputCheck()
 {
-	std::vector<UserInputEvents> events;
+	std::unordered_map<UserInputEvents, bool> events;
 
 	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kLeft);
+		events[UserInputEvents::kLeft] = true;
 	}
 	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kRight);
+		events[UserInputEvents::kRight] = true;
 	}
 	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kUp);
+		events[UserInputEvents::kUp] = true;
 	}
 	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kDown);
+		events[UserInputEvents::kDown] = true;
 	}
 	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_W) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kW);
+		events[UserInputEvents::kW] = true;
 	}
 	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_S) == GLFW_PRESS)
 	{
-		events.push_back(UserInputEvents::kS);
+		events[UserInputEvents::kS] = true;
+	}
+	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_Q) == GLFW_PRESS)
+	{
+		events[UserInputEvents::kQ] = true;
+	}
+	if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_E) == GLFW_PRESS)
+	{
+		events[UserInputEvents::kE] = true;
 	}
 
 	return events;
