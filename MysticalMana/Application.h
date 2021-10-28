@@ -4,6 +4,7 @@
 #include "InputManager.h"
 #include "RendererManager.h"
 #include "AudioManager.h"
+#include "AssetManager.h"
 
 class Application
 {
@@ -16,6 +17,6 @@ class Application
 		std::unique_ptr<InputManager> m_input_manager_;
 		std::unique_ptr<RendererManager> m_renderer_manager_;
 		std::unique_ptr<AudioManager> m_audio_manager_;
-
+		std::unique_ptr<AssetManager> m_asset_manager_;
 };
 

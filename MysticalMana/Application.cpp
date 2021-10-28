@@ -10,6 +10,7 @@ Application::Application()
 	m_input_manager_ = std::unique_ptr<InputManager>(new InputManager(m_window_.get()));
 	m_renderer_manager_ = std::unique_ptr<RendererManager>(new RendererManager(m_window_.get()));
 	m_audio_manager_ = std::unique_ptr<AudioManager>(new AudioManager());
+	m_asset_manager_ = std::unique_ptr<AssetManager>(new AssetManager());
 }
 
 void Application::Run()
@@ -23,63 +24,15 @@ void Application::Run()
 
 	//Graphics
 	StaticEntity static_entity;
-	static_entity.m_id = "TRIANGLE";
+	static_entity.m_id = "MY_OBJECT";
+	static_entity.mesh_file_name = "C:\\GameAssets\\monkey.obj";
 
 	//Define entity vertex data
-	Vertex vertex = {};
-	vertex.m_position = Diligent::float3(-1, -1, -1);
-	vertex.m_color = Diligent::float4(1, 0, 0, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	vertex = {};
-	vertex.m_position = Diligent::float3(-1, +1, -1);
-	vertex.m_color = Diligent::float4(0, 1, 0, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	vertex = {};
-	vertex.m_position = Diligent::float3(+1, +1, -1);
-	vertex.m_color = Diligent::float4(0, 0, 1, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	vertex = {};
-	vertex.m_position = Diligent::float3(+1, -1, -1);
-	vertex.m_color = Diligent::float4(1, 1, 1, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	vertex = {};
-	vertex.m_position = Diligent::float3(-1, -1, +1);
-	vertex.m_color = Diligent::float4(1, 1, 0, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	vertex = {};
-	vertex.m_position = Diligent::float3(-1, +1, +1);
-	vertex.m_color = Diligent::float4(0, 1, 1, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	vertex = {};
-	vertex.m_position = Diligent::float3(+1, +1, +1);
-	vertex.m_color = Diligent::float4(1, 0, 1, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	vertex = {};
-	vertex.m_position = Diligent::float3(+1, -1, +1);
-	vertex.m_color = Diligent::float4(0.2f, 0.2f, 0.2f, 1);
-	static_entity.m_vertices.push_back(vertex);
-
-	//Define entity vertex indices for drawing
-	static_entity.m_indices = {
-		2,0,1, 2,3,0,
-		4,6,5, 4,7,6,
-		0,7,4, 0,3,7,
-		1,0,4, 1,4,5,
-		1,5,2, 5,6,2,
-		3,6,7, 3,2,6
-	};
-	
+	static_entity.m_vertices = m_asset_manager_->GetMeshVertices(static_entity.mesh_file_name);
 
 	//Set buffers on entity
 	static_entity.m_vertex_buffer = m_renderer_manager_->CreateVertexBuffer(static_entity);
-	static_entity.m_index_buffer = m_renderer_manager_->CreateIndexBuffer(static_entity);
+	/*static_entity.m_index_buffer = m_renderer_manager_->CreateIndexBuffer(static_entity);*/
 
 	bool app_is_running = true;
 	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 5.0f);

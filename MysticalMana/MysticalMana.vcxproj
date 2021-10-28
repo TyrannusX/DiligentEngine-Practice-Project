@@ -126,7 +126,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\code\c++\MysticalMana\External\Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;fmodL_vc.lib;Diligent-Win32Platform.lib;Diligent-ShaderTools.lib;Diligent-Primitives.lib;Diligent-HLSL2GLSLConverterLib.lib;Diligent-GraphicsTools.lib;Diligent-GraphicsEngineVk-static.lib;Diligent-GraphicsEngineOpenGL-static.lib;Diligent-GraphicsEngineNextGenBase.lib;Diligent-GraphicsEngineD3DBase.lib;Diligent-GraphicsEngineD3D12-static.lib;Diligent-GraphicsEngineD3D11-static.lib;Diligent-GraphicsEngine.lib;Diligent-GraphicsAccessories.lib;DiligentFX.lib;Diligent-Common.lib;Diligent-BasicPlatform.lib;glew-static.lib;glslangd.lib;HLSLd.lib;MachineIndependentd.lib;OGLCompilerd.lib;GenericCodeGend.lib;spirv-cross-cored.lib;SPIRVd.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;OSDependentd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;fmodL_vc.lib;Diligent-Win32Platform.lib;Diligent-ShaderTools.lib;Diligent-Primitives.lib;Diligent-HLSL2GLSLConverterLib.lib;Diligent-GraphicsTools.lib;Diligent-GraphicsEngineVk-static.lib;Diligent-GraphicsEngineOpenGL-static.lib;Diligent-GraphicsEngineNextGenBase.lib;Diligent-GraphicsEngineD3DBase.lib;Diligent-GraphicsEngineD3D12-static.lib;Diligent-GraphicsEngineD3D11-static.lib;Diligent-GraphicsEngine.lib;Diligent-GraphicsAccessories.lib;DiligentFX.lib;Diligent-Common.lib;Diligent-BasicPlatform.lib;glew-static.lib;glslangd.lib;HLSLd.lib;MachineIndependentd.lib;OGLCompilerd.lib;GenericCodeGend.lib;spirv-cross-cored.lib;SPIRVd.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;OSDependentd.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="MysticalMana.cpp" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="AssetManager.h" />
     <ClInclude Include="AudioEntity.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="BaseEntity.h" />

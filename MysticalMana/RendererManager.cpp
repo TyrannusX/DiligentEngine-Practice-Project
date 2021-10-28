@@ -203,7 +203,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	/*
 	* Bind index buffer
 	*/
-	m_immediate_context_->SetIndexBuffer(static_entity.m_index_buffer, 0, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
+	/*m_immediate_context_->SetIndexBuffer(static_entity.m_index_buffer, 0, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION);*/
 
 	//Set the immediate rendering context's graphics pipeline to use
 	m_immediate_context_->SetPipelineState(m_pipeline_state_);
@@ -224,13 +224,13 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	* We want to draw using indexes and a specified number of them.
 	* We also want the engine to verify the state of the vertex and index buffers.
 	*/
-	Diligent::DrawIndexedAttribs indexed_attributes;
-	indexed_attributes.IndexType = Diligent::VT_UINT32;
-	indexed_attributes.NumIndices = 36;
+	Diligent::DrawAttribs indexed_attributes;
+	/*indexed_attributes.IndexType = Diligent::VT_UINT32;*/
+	indexed_attributes.NumVertices = static_entity.m_vertices.size() * sizeof(Vertex);
 	indexed_attributes.Flags = Diligent::DRAW_FLAG_VERIFY_ALL;
 
 	//Use the immediate context to render the next frame (draws on the back buffer)
-	m_immediate_context_->DrawIndexed(indexed_attributes);
+	m_immediate_context_->Draw(indexed_attributes);
 
 	//Use the swap chain to flip the back buffer to the front buffer (front gets moved to back)
 	m_swap_chain_->Present();
@@ -239,10 +239,10 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligent::Vector3<float> cameraRotationVector)
 {
 	//Calculate the transformations (translation, rotation, scale) for the world for the current model
-	Diligent::float4x4 rotation_matrix = Diligent::float4x4::RotationX(modifier * .017f);
+	Diligent::float4x4 rotation_matrix = Diligent::float4x4::RotationY(modifier * .017f);
 	modifier++;
 
-	Diligent::float4x4 scale_matrix = Diligent::float4x4::Scale(scale_modifier, scale_modifier, scale_modifier);
+	/*Diligent::float4x4 scale_matrix = Diligent::float4x4::Scale(scale_modifier, scale_modifier, scale_modifier);
 
 	if (scale_modifier >= 1.0f)
 	{
@@ -253,10 +253,10 @@ void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligen
 		reverse_scale = false;
 	}
 
-	reverse_scale ? scale_modifier -= 0.01f : scale_modifier += 0.01f;
+	reverse_scale ? scale_modifier -= 0.01f : scale_modifier += 0.01f;*/
 
 	//Calculate the world matrix which is where the rendered object will live relative to the origin (object space)
-	Diligent::float4x4 world_matrix = scale_matrix * rotation_matrix * Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
+	Diligent::float4x4 world_matrix = rotation_matrix * Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
 
 	//Move the view (Camera/your eye/whatever) to desired spot in world
 	Diligent::float4x4 camera_rotation_matrix = Diligent::float4x4::RotationY(cameraRotationVector.y);
