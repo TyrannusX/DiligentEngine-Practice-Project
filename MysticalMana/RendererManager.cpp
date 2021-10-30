@@ -65,7 +65,7 @@ RendererManager::RendererManager(Window* window)
 	* CULL_MODE_NONE -> draw everything.
 	* CULL_MODE_BACK -> dont draw what's behind something else.
 	*/
-	pipeline_create_info.GraphicsPipeline.RasterizerDesc.CullMode = Diligent::CULL_MODE_BACK;
+	pipeline_create_info.GraphicsPipeline.RasterizerDesc.CullMode = Diligent::CULL_MODE_NONE;
 
 	/*
 	* Set the depth test flag.
@@ -122,10 +122,30 @@ RendererManager::RendererManager(Window* window)
 			Diligent::False //Normalized?
 		},
 
-		//Attribute 1 is the vertex color
+		//Attribute 1 is the vertex normal
 		Diligent::LayoutElement
 		{
-			1,
+			1, //Attribute number that the shader will pull from its struct
+			0, //Buffer slot (defaults to 0)
+			3, //Number of components (position is x,y,z
+			Diligent::VT_FLOAT32, //component value type
+			Diligent::False //Normalized?
+		},
+
+		//Attribute 2 is the texture coordinate
+		Diligent::LayoutElement
+		{
+			2, //Attribute number that the shader will pull from its struct
+			0, //Buffer slot (defaults to 0)
+			2, //Number of components (position is x,y,z
+			Diligent::VT_FLOAT32, //component value type
+			Diligent::False //Normalized?
+		},
+
+		//Attribute 3 is the vertex color
+		Diligent::LayoutElement
+		{
+			3,
 			0,
 			4,
 			Diligent::VT_FLOAT32,
@@ -239,8 +259,8 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligent::Vector3<float> cameraRotationVector)
 {
 	//Calculate the transformations (translation, rotation, scale) for the world for the current model
-	Diligent::float4x4 rotation_matrix = Diligent::float4x4::RotationY(modifier * .017f);
-	modifier++;
+	/*Diligent::float4x4 rotation_matrix = Diligent::float4x4::RotationY(Diligent::PI_F);
+	modifier++;*/
 
 	/*Diligent::float4x4 scale_matrix = Diligent::float4x4::Scale(scale_modifier, scale_modifier, scale_modifier);
 
@@ -256,7 +276,7 @@ void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligen
 	reverse_scale ? scale_modifier -= 0.01f : scale_modifier += 0.01f;*/
 
 	//Calculate the world matrix which is where the rendered object will live relative to the origin (object space)
-	Diligent::float4x4 world_matrix = rotation_matrix * Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
+	Diligent::float4x4 world_matrix = Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
 
 	//Move the view (Camera/your eye/whatever) to desired spot in world
 	Diligent::float4x4 camera_rotation_matrix = Diligent::float4x4::RotationY(cameraRotationVector.y);
@@ -284,7 +304,7 @@ void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligen
 	Diligent::float4x4 projection_matrix;
 	projection_matrix._11 = x_scale;
 	projection_matrix._22 = y_scale;
-	projection_matrix.SetNearFarClipPlanes(0.1f, 100.0f, m_render_device_->GetDeviceInfo().IsGLDevice());
+	projection_matrix.SetNearFarClipPlanes(2.0f, 100.0f, m_render_device_->GetDeviceInfo().IsGLDevice());
 
 	//Calculate the world_view_projection_matrix
 	m_world_view_projection_matrix_ = world_matrix * camera_matrix * projection_matrix;

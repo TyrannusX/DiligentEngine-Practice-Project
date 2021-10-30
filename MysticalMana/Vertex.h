@@ -10,6 +10,8 @@
 struct Vertex
 {
 	Diligent::float3 m_position;
+	Diligent::float3 m_normal;
+	Diligent::float2 m_texture_coordinate;
 	Diligent::float4 m_color;
 };
 
