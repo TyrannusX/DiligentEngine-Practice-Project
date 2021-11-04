@@ -1,5 +1,7 @@
-#pragma once
-#include <BasicMath.hpp>
+#ifndef VERTEX_H
+#define VERTEX_H
+
+#include <DiligentCore/Common/interface/BasicMath.hpp>
 
 /*
 * Representation of a vertex.
@@ -14,4 +16,4 @@ struct Vertex
 	Diligent::float2 m_texture_coordinate;
 	Diligent::float4 m_color;
 };
-
+#endif

@@ -1,20 +1,32 @@
-#pragma once
+#ifndef RENDERERMANAGER_H
+#define RENDERERMANAGER_H
 
-#define PLATFORM_WIN32 1
+/*
+* Define macros for Diligent Engine
+*/
+#ifdef _WIN32
+	#define PLATFORM_WIN32 1
+#elif _WIN64
+	#define PLATFORM_WIN32 1
+#elif __linux__
+	#define PLATFORM_LINUX 1
+#endif
+
+#define PLATFORM_LINUX 1
 
 #include <memory>
 #include <string>
 #include "Window.h"
 #include "StaticEntity.h"
 #include "Vertex.h"
-#include <PipelineState.h>
-#include <EngineFactoryVk.h>
-#include <RefCntAutoPtr.hpp>
-#include <RenderDevice.h>
-#include <DeviceContext.h>
-#include <SwapChain.h>
-#include <BasicMath.hpp>
-#include <MapHelper.hpp>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/PipelineState.h>
+#include <DiligentCore/Graphics/GraphicsEngineVulkan/interface/EngineFactoryVk.h>
+#include <DiligentCore/Common/interface/RefCntAutoPtr.hpp>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/RenderDevice.h>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/DeviceContext.h>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/SwapChain.h>
+#include <DiligentCore/Common/interface/BasicMath.hpp>
+#include <DiligentCore/Graphics/GraphicsTools/interface/MapHelper.hpp>
 
 class RendererManager
 {
@@ -74,7 +86,7 @@ class RendererManager
 		bool enable_validation_ = true;
 
 	public:
-		RendererManager(Window* window);
+		RendererManager(MysticalMana::Window* window);
 		~RendererManager();
 		void UpdateWorld(Diligent::Vector3<float> cameraVector, Diligent::Vector3<float> cameraRotationVector);
 		void PaintNextFrame(StaticEntity& static_entity);
@@ -82,4 +94,4 @@ class RendererManager
 		Diligent::RefCntAutoPtr<Diligent::IBuffer> CreateIndexBuffer(StaticEntity& staticEntity);
 
 };
-
+#endif

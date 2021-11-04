@@ -1,6 +1,8 @@
-#pragma once
+#ifndef AUDIOENTITY_H
+#define AUDIOENTITY_H
+
 #include "BaseEntity.h"
-#include <FMOD/fmod.hpp>
+#include "../External/Include/FMOD/fmod.hpp"
 
 struct AudioEntity : BaseEntity
 {
@@ -8,4 +10,4 @@ struct AudioEntity : BaseEntity
 	FMOD::Sound* m_fmound_sound_handle;
 	bool m_is_audio_playing = false;
 };
-
+#endif

@@ -1,13 +1,31 @@
 /*
-* Force GLFW to expose native window handle
+* Macros to define the following:
+* 
+* Force GLFW to expose native window handle.
+* Hide Windows Header functionality.
 */
-
-#define GLFW_EXPOSE_NATIVE_WIN32 1
+#ifdef _WIN32
+	#define GLFW_EXPOSE_NATIVE_WIN32 1
+	#define NOMINMAX
+#elif _WIN64
+	#define GLFW_EXPOSE_NATIVE_WIN32 1
+	#define NOMINMAX
+#elif __linux__
+	#define GLFW_EXPOSE_NATIVE_X11 1
+#endif
 
 /*
-* windows.h defines its own versions of these functions
+* Define macros for Diligent Engine
 */
-#define NOMINMAX
+#ifdef _WIN32
+	#define PLATFORM_WIN32 1
+#elif _WIN64
+	#define PLATFORM_WIN32 1
+#elif __linux__
+	#define PLATFORM_LINUX 1
+#endif
+
+#define PLATFORM_LINUX 1
 
 #include <iostream>
 #include "RendererManager.h"
@@ -21,7 +39,9 @@ int modifier = 1;
 float scale_modifier = 1.0f;
 bool reverse_scale = false;
 
-RendererManager::RendererManager(Window* window)
+using namespace Diligent;
+
+RendererManager::RendererManager(MysticalMana::Window* window)
 {
 	//Get underlying window and details
 	GLFWwindow* underlying_window = window->GetUnderlyingWindow();
@@ -29,7 +49,16 @@ RendererManager::RendererManager(Window* window)
 	int window_width;
 	int window_height;
 	glfwGetWindowSize(underlying_window, &window_width, &window_height);
-	HWND native_os_window = glfwGetWin32Window(underlying_window);
+
+	//Get underlying OS window
+	#ifdef _WIN32
+		HWND native_os_window = glfwGetWin32Window(underlying_window);
+	#elif _WIN64
+		HWND native_os_window = glfwGetWin32Window(underlying_window);
+	#elif __linux__
+		auto native_os_window = glfwGetX11Window(underlying_window);
+		auto native_os_display = glfwGetX11Display();
+	#endif
 
 	m_view_width_ = (uint16_t)window_width;
 	m_view_height_ = (uint16_t)window_height;
@@ -39,8 +68,20 @@ RendererManager::RendererManager(Window* window)
 	Diligent::EngineVkCreateInfo create_info;
 	engine_factory->CreateDeviceAndContextsVk(create_info, &m_render_device_, &m_immediate_context_);
 	Diligent::SwapChainDesc swap_chain_description;
-	Diligent::Win32NativeWindow diligent_native_window_handle{ native_os_window };
-	engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
+
+	//Setup the native window handle for Diligent Engine
+	#ifdef _WIN32
+		Diligent::Win32NativeWindow diligent_native_window_handle{ native_os_window };
+		engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
+	#elif _WIN64
+		Diligent::Win32NativeWindow diligent_native_window_handle{ native_os_window };
+		engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
+	#elif __linux__
+		Diligent::LinuxNativeWindow diligent_native_window_handle;
+		diligent_native_window_handle.WindowId = native_os_window;
+		diligent_native_window_handle.pDisplay = native_os_display;
+		engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
+	#endif
 
 	//Initialize graphics/compute pipeline
 	Diligent::GraphicsPipelineStateCreateInfo pipeline_create_info;
@@ -72,7 +113,7 @@ RendererManager::RendererManager(Window* window)
 	* If enabled, fragments are discarded if they
 	* are drawn behind another fragment.
 	*/
-	pipeline_create_info.GraphicsPipeline.DepthStencilDesc.DepthEnable = Diligent::True;
+	pipeline_create_info.GraphicsPipeline.DepthStencilDesc.DepthEnable = 1;
 
 	//Create a shader source stream factory to read shaders from file
 	Diligent::RefCntAutoPtr<Diligent::IShaderSourceInputStreamFactory> stream_factory;
@@ -86,7 +127,7 @@ RendererManager::RendererManager(Window* window)
 	shader_create_info.Desc.ShaderType = Diligent::SHADER_TYPE_VERTEX;
 	shader_create_info.EntryPoint = "main";
 	shader_create_info.Desc.Name = "Mystical Mana Vertex Shader";
-	shader_create_info.FilePath = "C:\\code\\c++\\MysticalMana\\x64\\Debug\\vertex.hlsl";
+	shader_create_info.FilePath = "vertex.hlsl";
 	m_render_device_->CreateShader(shader_create_info, &vertex_shader_handle);
 
 	//Pixel/Fragment shader handle
@@ -94,7 +135,7 @@ RendererManager::RendererManager(Window* window)
 	shader_create_info.Desc.ShaderType = Diligent::SHADER_TYPE_PIXEL;
 	shader_create_info.EntryPoint = "main";
 	shader_create_info.Desc.Name = "Mystical Mana Pixel Shader";
-	shader_create_info.FilePath = "C:\\code\\c++\\MysticalMana\\x64\\Debug\\fragment.hlsl";
+	shader_create_info.FilePath = "fragment.hlsl";
 	m_render_device_->CreateShader(shader_create_info, &pixel_shader_handle);
 
 	//Define uniform buffer.
@@ -119,7 +160,7 @@ RendererManager::RendererManager(Window* window)
 			0, //Buffer slot (defaults to 0)
 			3, //Number of components (position is x,y,z
 			Diligent::VT_FLOAT32, //component value type
-			Diligent::False //Normalized?
+			0 //Normalized?
 		},
 
 		//Attribute 1 is the vertex normal
@@ -129,7 +170,7 @@ RendererManager::RendererManager(Window* window)
 			0, //Buffer slot (defaults to 0)
 			3, //Number of components (position is x,y,z
 			Diligent::VT_FLOAT32, //component value type
-			Diligent::False //Normalized?
+			0 //Normalized?
 		},
 
 		//Attribute 2 is the texture coordinate
@@ -139,7 +180,7 @@ RendererManager::RendererManager(Window* window)
 			0, //Buffer slot (defaults to 0)
 			2, //Number of components (position is x,y,z
 			Diligent::VT_FLOAT32, //component value type
-			Diligent::False //Normalized?
+			0 //Normalized?
 		},
 
 		//Attribute 3 is the vertex color
@@ -149,7 +190,7 @@ RendererManager::RendererManager(Window* window)
 			0,
 			4,
 			Diligent::VT_FLOAT32,
-			Diligent::False
+			0
 		}
 	};
 	pipeline_create_info.GraphicsPipeline.InputLayout.LayoutElements = layout_elements;

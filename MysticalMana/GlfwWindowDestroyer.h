@@ -1,5 +1,7 @@
-#pragma once
-#include <GLFW\glfw3.h>
+#ifndef DESTROYER_H
+#define DESTROYER_H
+
+#include <GLFW/glfw3.h>
 
 struct GlfwWindowDestroyer
 {
@@ -8,3 +10,4 @@ struct GlfwWindowDestroyer
 		glfwDestroyWindow(ptr);
 	}
 };
+#endif

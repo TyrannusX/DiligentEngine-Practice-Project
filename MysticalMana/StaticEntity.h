@@ -1,9 +1,11 @@
-#pragma once
+#ifndef STATICENTITY_H
+#define STATICENTITY_H
+
 #include "BaseEntity.h"
 #include "Vertex.h"
-#include <Buffer.h>
-#include <BasicTypes.h>
-#include <RefCntAutoPtr.hpp>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/Buffer.h>
+#include <DiligentCore/Primitives/interface/BasicTypes.h>
+#include <DiligentCore/Common/interface/RefCntAutoPtr.hpp>
 #include <vector>
 #include <string>
 
@@ -15,4 +17,4 @@ struct StaticEntity : BaseEntity
 	Diligent::RefCntAutoPtr<Diligent::IBuffer> m_vertex_buffer;
 	Diligent::RefCntAutoPtr<Diligent::IBuffer> m_index_buffer;
 };
-
+#endif

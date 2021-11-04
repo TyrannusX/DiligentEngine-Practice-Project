@@ -1,6 +1,8 @@
-#pragma once
+#ifndef INPUTMANAGER_H
+#define INPUTMANAGER_H
+
 #include <memory>
-#include <GLFW\glfw3.h>
+#include <GLFW/glfw3.h>
 #include <set>
 #include "UserInputEvents.h"
 #include "Window.h"
@@ -9,9 +11,9 @@
 class InputManager
 {
 	public:
-		InputManager(Window* window);
+		InputManager(MysticalMana::Window* window);
 		std::set<UserInputEvents> UserInputCheck();
 	private:
 		GLFWwindow* m_underlying_window_;
 };
-
+#endif

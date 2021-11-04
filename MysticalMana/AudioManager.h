@@ -1,7 +1,9 @@
-#pragma once
+#ifndef AUDIOMANAGER_H
+#define AUDIOMANAGER_H
+
 #include "AudioEntity.h"
 #include <memory>
-#include <FMOD\fmod.hpp>
+#include "../External/Include/FMOD/fmod.hpp"
 #undef main
 
 class AudioManager
@@ -12,4 +14,4 @@ class AudioManager
 	private:
 		FMOD::System* m_fmod_system_;
 };
-
+#endif

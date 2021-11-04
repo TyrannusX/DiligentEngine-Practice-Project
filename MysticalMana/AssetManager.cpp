@@ -22,7 +22,8 @@ std::vector<Vertex> AssetManager::GetMeshVertices(const std::string& file_path)
 		| aiProcess_SortByPType);
 	if (mesh_scene == nullptr)
 	{
-		throw std::exception("Failed to load mesh file");
+		std::cout << "MESH BAD" << std::endl;
+		throw std::exception();
 	}
 
 	/*

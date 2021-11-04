@@ -6,7 +6,7 @@
 
 Application::Application()
 {
-	m_window_ = std::unique_ptr<Window>(new Window(800, 600, "Mystical Mana"));
+	m_window_ = std::unique_ptr<MysticalMana::Window>(new MysticalMana::Window(800, 600, "Mystical Mana"));
 	m_input_manager_ = std::unique_ptr<InputManager>(new InputManager(m_window_.get()));
 	m_renderer_manager_ = std::unique_ptr<RendererManager>(new RendererManager(m_window_.get()));
 	m_audio_manager_ = std::unique_ptr<AudioManager>(new AudioManager());
@@ -20,12 +20,12 @@ void Application::Run()
 	//Audio
 	AudioEntity audio_entity;
 	audio_entity.m_id = "BACKGROUND_MUSIC";
-	audio_entity.m_file_name = "C:\\GameAssets\\deus-ex-ambient.mp3";
+	audio_entity.m_file_name = "/home/rob/GameAssets/deus-ex-ambient.mp3";
 
 	//Graphics
 	StaticEntity static_entity;
 	static_entity.m_id = "MY_OBJECT";
-	static_entity.mesh_file_name = "C:\\GameAssets\\monkey.obj";
+	static_entity.mesh_file_name = "/home/rob/GameAssets/monkey.obj";
 
 	//Define entity vertex data
 	static_entity.m_vertices = m_asset_manager_->GetMeshVertices(static_entity.mesh_file_name);

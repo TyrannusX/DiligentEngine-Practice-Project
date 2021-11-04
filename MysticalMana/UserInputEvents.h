@@ -1,4 +1,6 @@
-#pragma once
+#ifndef UIE_H
+#define UIE_H
+
 enum class UserInputEvents
 {
 	kLeft,
@@ -10,3 +12,4 @@ enum class UserInputEvents
 	kQ,
 	kE,
 };
+#endif

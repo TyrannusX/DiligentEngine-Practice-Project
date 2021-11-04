@@ -1,18 +1,19 @@
 #include "AudioManager.h"
 #include <exception>
+#include <iostream>
 
 AudioManager::AudioManager()
 {
 	FMOD_RESULT fmod_result = FMOD::System_Create(&m_fmod_system_);
 	if (fmod_result != FMOD_OK)
 	{
-		throw std::exception("Failed to create FMOD system");
+		throw std::exception();
 	}
 
 	fmod_result = m_fmod_system_->init(512, FMOD_INIT_NORMAL, 0);
 	if (fmod_result != FMOD_OK)
 	{
-		throw std::exception("Failed to initialize FMOD");
+		throw std::exception();
 	}
 }
 
