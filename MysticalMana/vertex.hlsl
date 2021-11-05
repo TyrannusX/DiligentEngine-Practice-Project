@@ -1,31 +1,35 @@
 cbuffer Constants
 {
     float4x4 g_WorldViewProj;
+    float4x4 g_NormalTransform;
+    float4 g_LightDirection;
 };
 
 struct VSInput
 {
-    float3 Pos: ATTRIB0;
-    float3 Norm: ATTRIB1;
-    float2 Tex: ATTRIB2;
-    float4 Color: ATTRIB3;
+    float3 Position: ATTRIB0;
+    float3 Normal: ATTRIB1;
+    float2 UV: ATTRIB2;
 };
 
 struct PSInput
 {
-    float4 Pos: SV_POSITION;
-    float2 Tex: TEXCOORD0;
-    float3 Norm: NORMAL;
+    float4 Position: SV_POSITION;
+    float2 UV: TEX_COORD;
+    float NdotL: N_DOT_L;
 };
 
 void main(in VSInput VSIn, out PSInput PSIn)
 {
-    //Set the position for the pixel shader 
-    PSIn.Pos = mul(float4(VSIn.Pos, 1.0), g_WorldViewProj);
-    
-    //Set the texture coordinate for the pixel shader
-    PSIn.Tex = VSIn.Tex;
+    //Transform the vertex from object space to world space
+    PSIn.Position = mul(float4(VSIn.Position, 1.0), g_WorldViewProj);
 
-    //Set the normal for the pixel shader
-    PSIn.Norm = VSIn.Norm;
+    //Normalize
+    float3 Normal = mul(float4(VSIn.Normal, 0.0), g_NormalTransform);
+
+    //Calculate the dot product between the vertex normalizat and light direction to determine saturation/color of vertex
+    PSIn.NdotL = saturate(dot(Normal.xyz, -g_LightDirection.xyz));
+
+    //Set the UV/Textures coordinates
+    PSIn.UV = VSIn.UV;
 }

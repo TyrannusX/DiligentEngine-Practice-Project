@@ -83,6 +83,11 @@ class RendererManager
 		*/
 		Diligent::float4x4 m_world_view_projection_matrix_;
 
+		/*
+		* The world matrix
+		*/
+		Diligent::float4x4 m_world_matrix_;
+
 		bool enable_validation_ = true;
 
 	public:

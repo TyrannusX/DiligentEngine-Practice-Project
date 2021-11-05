@@ -30,6 +30,7 @@
 #include <iostream>
 #include "RendererManager.h"
 #include "Vertex.h"
+#include "UniformConstants.h"
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #include <fstream>
@@ -38,8 +39,6 @@
 int modifier = 1;
 float scale_modifier = 1.0f;
 bool reverse_scale = false;
-
-using namespace Diligent;
 
 RendererManager::RendererManager(MysticalMana::Window* window)
 {
@@ -95,6 +94,9 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	pipeline_create_info.GraphicsPipeline.RTVFormats[0] = m_swap_chain_->GetDesc().ColorBufferFormat;
 	pipeline_create_info.GraphicsPipeline.DSVFormat = m_swap_chain_->GetDesc().DepthBufferFormat;
 
+	//Define the amount of multisampling
+	pipeline_create_info.GraphicsPipeline.SmplDesc.Count = 1;
+
 	//Define the types of primitives the pipeline will output (triangles in this case)
 	pipeline_create_info.GraphicsPipeline.PrimitiveTopology = Diligent::PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
@@ -106,7 +108,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	* CULL_MODE_NONE -> draw everything.
 	* CULL_MODE_BACK -> dont draw what's behind something else.
 	*/
-	pipeline_create_info.GraphicsPipeline.RasterizerDesc.CullMode = Diligent::CULL_MODE_NONE;
+	pipeline_create_info.GraphicsPipeline.RasterizerDesc.CullMode = Diligent::CULL_MODE_BACK;
 
 	/*
 	* Set the depth test flag.
@@ -181,16 +183,6 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 			2, //Number of components (position is x,y,z
 			Diligent::VT_FLOAT32, //component value type
 			0 //Normalized?
-		},
-
-		//Attribute 3 is the vertex color
-		Diligent::LayoutElement
-		{
-			3,
-			0,
-			4,
-			Diligent::VT_FLOAT32,
-			0
 		}
 	};
 	pipeline_create_info.GraphicsPipeline.InputLayout.LayoutElements = layout_elements;
@@ -202,6 +194,26 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 
 	//Define the default shader variable type
 	pipeline_create_info.PSODesc.ResourceLayout.DefaultVariableType = Diligent::SHADER_RESOURCE_VARIABLE_TYPE_STATIC;
+
+	/*
+	* Define the immutable sampler for g_Texture in the shader.
+	* This creates the anisotropic filter, which basically smooths the appearance of polygons.
+	*/
+	Diligent::SamplerDesc linear_sample
+	{
+		Diligent::FILTER_TYPE_LINEAR,
+		Diligent::FILTER_TYPE_LINEAR,
+		Diligent::FILTER_TYPE_LINEAR,
+		Diligent::TEXTURE_ADDRESS_CLAMP,
+		Diligent::TEXTURE_ADDRESS_CLAMP,
+		Diligent::TEXTURE_ADDRESS_CLAMP,
+	};
+	Diligent::ImmutableSamplerDesc immutable_samplers[] =
+	{
+		{Diligent::SHADER_TYPE_PIXEL, "g_Texture", linear_sample}
+	};
+	pipeline_create_info.PSODesc.ResourceLayout.ImmutableSamplers = immutable_samplers;
+	pipeline_create_info.PSODesc.ResourceLayout.NumImmutableSamplers = _countof(immutable_samplers);
 
 	//Finally, pass in the pipeline create struct to create the pipeline
 	m_render_device_->CreateGraphicsPipelineState(pipeline_create_info, &m_pipeline_state_);
@@ -238,15 +250,14 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	m_immediate_context_->ClearDepthStencil(depth_target_handle, Diligent::CLEAR_DEPTH_FLAG, 1.0f, 0, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
 
 	/*
-	* Map the uniform data.
-	* 
-	* Use the immediate context to manage the process.
-	* Provide the uniform buffer which holds the application data.
-	* Peform a write operation to the shader/pipeline
-	* Invalidate the previous value
+	* The MapHelper uses the uniform butter to
+	* send data from the C++ application (any data)
+	* to a match value found in the shader CBuffer constant data.
 	*/
-	Diligent::MapHelper<Diligent::float4x4> uniform_buffer_constant_data(m_immediate_context_, m_uniform_buffer_, Diligent::MAP_WRITE, Diligent::MAP_FLAG_DISCARD);
-	*uniform_buffer_constant_data = m_world_view_projection_matrix_.Transpose();
+	Diligent::MapHelper<UniformConstants> uniform_buffer_constant_data(m_immediate_context_, m_uniform_buffer_, Diligent::MAP_WRITE, Diligent::MAP_FLAG_DISCARD);
+	uniform_buffer_constant_data->WorldViewProj = m_world_view_projection_matrix_.Transpose();
+	uniform_buffer_constant_data->NormalTransform = m_world_matrix_.RemoveTranslation().Inverse();
+	uniform_buffer_constant_data->LightDirection = Diligent::float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	/*
 	* Bind the vertex buffer of the static entity to the pipeline.
@@ -348,6 +359,7 @@ void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligen
 	projection_matrix.SetNearFarClipPlanes(2.0f, 100.0f, m_render_device_->GetDeviceInfo().IsGLDevice());
 
 	//Calculate the world_view_projection_matrix
+	m_world_matrix_ = world_matrix;
 	m_world_view_projection_matrix_ = world_matrix * camera_matrix * projection_matrix;
 }
 
