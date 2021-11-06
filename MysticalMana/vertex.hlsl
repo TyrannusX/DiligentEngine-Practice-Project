@@ -25,7 +25,7 @@ void main(in VSInput VSIn, out PSInput PSIn)
     PSIn.Position = mul(float4(VSIn.Position, 1.0), g_WorldViewProj);
 
     //Normalize
-    float3 Normal = mul(float4(VSIn.Normal, 0.0), g_NormalTransform);
+    float3 Normal = mul(float4(VSIn.Normal, 0.0), g_NormalTransform).xyz;
 
     //Calculate the dot product between the vertex normalizat and light direction to determine saturation/color of vertex
     PSIn.NdotL = saturate(dot(Normal.xyz, -g_LightDirection.xyz));

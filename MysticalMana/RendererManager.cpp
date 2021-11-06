@@ -196,6 +196,16 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	pipeline_create_info.PSODesc.ResourceLayout.DefaultVariableType = Diligent::SHADER_RESOURCE_VARIABLE_TYPE_STATIC;
 
 	/*
+	* Define shader variables
+	*/
+	Diligent::ShaderResourceVariableDesc shader_variables[] =
+	{
+		{Diligent::SHADER_TYPE_PIXEL, "g_Texture", Diligent::SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE}
+	};
+	pipeline_create_info.PSODesc.ResourceLayout.Variables = shader_variables;
+	pipeline_create_info.PSODesc.ResourceLayout.NumVariables = _countof(shader_variables);
+
+	/*
 	* Define the immutable sampler for g_Texture in the shader.
 	* This creates the anisotropic filter, which basically smooths the appearance of polygons.
 	*/
@@ -257,7 +267,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	Diligent::MapHelper<UniformConstants> uniform_buffer_constant_data(m_immediate_context_, m_uniform_buffer_, Diligent::MAP_WRITE, Diligent::MAP_FLAG_DISCARD);
 	uniform_buffer_constant_data->WorldViewProj = m_world_view_projection_matrix_.Transpose();
 	uniform_buffer_constant_data->NormalTransform = m_world_matrix_.RemoveTranslation().Inverse();
-	uniform_buffer_constant_data->LightDirection = Diligent::float4(0.0f, 0.0f, 0.0f, 0.0f);
+	uniform_buffer_constant_data->LightDirection = Diligent::normalize(Diligent::float3(-0.49f, -0.60f, 0.64f));
 
 	/*
 	* Bind the vertex buffer of the static entity to the pipeline.
@@ -270,7 +280,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	*/
 	const Diligent::Uint64 kOffset = 0;
 	Diligent::IBuffer* buffers[] = { static_entity.m_vertex_buffer };
-	m_immediate_context_->SetVertexBuffers(0, 1, buffers, &kOffset, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION, Diligent::SET_VERTEX_BUFFERS_FLAG_RESET);
+	m_immediate_context_->SetVertexBuffers(0, 1, buffers, nullptr, Diligent::RESOURCE_STATE_TRANSITION_MODE_VERIFY, Diligent::SET_VERTEX_BUFFERS_FLAG_RESET);
 
 	/*
 	* Bind index buffer
@@ -288,7 +298,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	* Think in terms of a DB commit in SQL.
 	* Operations dont take affect until you commit
 	*/
-	m_immediate_context_->CommitShaderResources(m_shader_resource_binder_, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
+	m_immediate_context_->CommitShaderResources(m_shader_resource_binder_, Diligent::RESOURCE_STATE_TRANSITION_MODE_VERIFY);
 
 	/*
 	* Define the draw attributes
@@ -356,7 +366,7 @@ void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligen
 	Diligent::float4x4 projection_matrix;
 	projection_matrix._11 = x_scale;
 	projection_matrix._22 = y_scale;
-	projection_matrix.SetNearFarClipPlanes(2.0f, 100.0f, m_render_device_->GetDeviceInfo().IsGLDevice());
+	projection_matrix.SetNearFarClipPlanes(0.1f, 100.0f, m_render_device_->GetDeviceInfo().IsGLDevice());
 
 	//Calculate the world_view_projection_matrix
 	m_world_matrix_ = world_matrix;
