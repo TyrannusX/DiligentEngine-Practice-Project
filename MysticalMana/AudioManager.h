@@ -3,7 +3,7 @@
 
 #include "AudioEntity.h"
 #include <memory>
-#include "../External/Include/FMOD/fmod.hpp"
+#include <FMOD/fmod.hpp>
 #undef main
 
 class AudioManager

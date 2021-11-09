@@ -2,7 +2,7 @@
 #define AUDIOENTITY_H
 
 #include "BaseEntity.h"
-#include "../External/Include/FMOD/fmod.hpp"
+#include <FMOD/fmod.hpp>
 
 struct AudioEntity : BaseEntity
 {

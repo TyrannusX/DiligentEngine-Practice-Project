@@ -25,8 +25,6 @@
 	#define PLATFORM_LINUX 1
 #endif
 
-#define PLATFORM_LINUX 1
-
 #include <iostream>
 #include "RendererManager.h"
 #include "Vertex.h"

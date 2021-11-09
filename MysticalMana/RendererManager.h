@@ -12,8 +12,6 @@
 	#define PLATFORM_LINUX 1
 #endif
 
-#define PLATFORM_LINUX 1
-
 #include <memory>
 #include <string>
 #include "Window.h"
