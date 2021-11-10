@@ -29,7 +29,7 @@ find_library(GENERICCODEGEN GenericCodeGen GenericCodeGend PATHS "C:\\Program Fi
 find_library(GLEWSTATIC glew-static PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 find_library(GLSLLANG glslang glslangd PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 find_library(GRAPHICSENGINEOPENGL GraphicsEngineOpenGL Diligent-GraphicsEngineOpenGL-static PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" GraphicsEngineOpenGL REQUIRED)
-find_library(GRAPHICSENGINEVK GraphicsEngineVk Diligent-GraphicsEngineVk-static PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
+find_library(GRAPHICSENGINEVK GraphicsEngineVk Diligent-GraphicsEngineVk-static PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED) 
 find_library(EHLSL HLSL HLSLd PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 find_library(MACHINEINDEPENDENT MachineIndependent MachineIndependentd PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 find_library(OGLCOMPILER OGLCompiler OGLCompilerd PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
@@ -44,7 +44,9 @@ find_library(DILIGENTTOOLS DiligentTools Diligent-GraphicsTools PATHS "C:\\Progr
 
 #compile
 file(GLOB_RECURSE SRC_FILES MysticalMana/*.cpp)
-add_executable(MysticalMana ${SRC_FILES})
+file(GLOB_RECURSE INCL_FILES MysticalMana/*.h)
+
+add_executable(MysticalMana ${SRC_FILES} ${INCL_FILES})
 target_include_directories(MysticalMana PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/MysticalMana)
 
 if(UNIX)

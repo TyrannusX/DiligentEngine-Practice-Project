@@ -218,7 +218,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	};
 	Diligent::ImmutableSamplerDesc immutable_samplers[] =
 	{
-		{Diligent::SHADER_TYPE_PIXEL, "g_Texture", linear_sample}
+		{Diligent::SHADER_TYPE_PIXEL, "g_Texture_sampler", linear_sample}
 	};
 	pipeline_create_info.PSODesc.ResourceLayout.ImmutableSamplers = immutable_samplers;
 	pipeline_create_info.PSODesc.ResourceLayout.NumImmutableSamplers = _countof(immutable_samplers);
