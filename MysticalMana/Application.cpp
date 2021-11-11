@@ -20,12 +20,12 @@ void Application::Run()
 	//Audio
 	AudioEntity audio_entity;
 	audio_entity.m_id = "BACKGROUND_MUSIC";
-	audio_entity.m_file_name = "c:\\GameAssets\\deus-ex-ambient.mp3";
+	audio_entity.m_file_name = "C:\\GameAssets\\deus-ex-ambient.mp3";
 
 	//Graphics
 	StaticEntity static_entity;
 	static_entity.m_id = "MY_OBJECT";
-	static_entity.mesh_file_name = "c:\\GameAssets\\monkey.obj";
+	static_entity.mesh_file_name = "C:\\GameAssets\\Mandalorian.obj";
 
 	//Define entity vertex data
 	static_entity.m_vertices = m_asset_manager_->GetMeshVertices(static_entity.mesh_file_name);

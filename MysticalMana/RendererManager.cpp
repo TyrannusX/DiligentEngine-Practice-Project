@@ -127,7 +127,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	shader_create_info.Desc.ShaderType = Diligent::SHADER_TYPE_VERTEX;
 	shader_create_info.EntryPoint = "main";
 	shader_create_info.Desc.Name = "Mystical Mana Vertex Shader";
-	shader_create_info.FilePath = "vertex.hlsl";
+	shader_create_info.FilePath = "C:\\code\\c++\\MysticalMana\\build\\Debug\\vertex.hlsl";
 	m_render_device_->CreateShader(shader_create_info, &vertex_shader_handle);
 
 	//Pixel/Fragment shader handle
@@ -135,7 +135,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	shader_create_info.Desc.ShaderType = Diligent::SHADER_TYPE_PIXEL;
 	shader_create_info.EntryPoint = "main";
 	shader_create_info.Desc.Name = "Mystical Mana Pixel Shader";
-	shader_create_info.FilePath = "fragment.hlsl";
+	shader_create_info.FilePath = "C:\\code\\c++\\MysticalMana\\build\\Debug\\fragment.hlsl";
 	m_render_device_->CreateShader(shader_create_info, &pixel_shader_handle);
 
 	//Define uniform buffer.
@@ -278,7 +278,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	*/
 	const Diligent::Uint64 kOffset = 0;
 	Diligent::IBuffer* buffers[] = { static_entity.m_vertex_buffer };
-	m_immediate_context_->SetVertexBuffers(0, 1, buffers, nullptr, Diligent::RESOURCE_STATE_TRANSITION_MODE_VERIFY, Diligent::SET_VERTEX_BUFFERS_FLAG_RESET);
+	m_immediate_context_->SetVertexBuffers(0, 1, buffers, nullptr, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION, Diligent::SET_VERTEX_BUFFERS_FLAG_RESET);
 
 	/*
 	* Bind index buffer
@@ -296,7 +296,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	* Think in terms of a DB commit in SQL.
 	* Operations dont take affect until you commit
 	*/
-	m_immediate_context_->CommitShaderResources(m_shader_resource_binder_, Diligent::RESOURCE_STATE_TRANSITION_MODE_VERIFY);
+	m_immediate_context_->CommitShaderResources(m_shader_resource_binder_, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
 
 	/*
 	* Define the draw attributes

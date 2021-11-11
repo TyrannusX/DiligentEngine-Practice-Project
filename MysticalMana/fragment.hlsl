@@ -16,5 +16,5 @@ struct PSOutput
 void main(in  PSInput  PSIn, out PSOutput PSOut)
 {
     //Set the final color of the pixel using the calculated saturation from the VSH
-    PSOut.Color = g_Texture.Sample(g_Texture_sampler, PSIn.UV) * (PSIn.NdotL * 0.8 + 0.2);
+    PSOut.Color = float4(PSIn.UV, 1.0, 1.0);
 }

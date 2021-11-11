@@ -42,13 +42,18 @@ find_library(DILIGENTFX DiligentFX PATHS "C:\\Program Files (x86)\\Microsoft Vis
 find_library(DILIGENTTOOLS DiligentTools Diligent-GraphicsTools PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 
 
-#compile
+#Add headers, sources, and assets
 file(GLOB_RECURSE SRC_FILES MysticalMana/*.cpp)
 file(GLOB_RECURSE INCL_FILES MysticalMana/*.h)
+file(COPY MysticalMana/vertex.hlsl DESTINATION ${CMAKE_BINARY_DIR}/Debug)
+file(COPY MysticalMana/fragment.hlsl DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 
 add_executable(MysticalMana ${SRC_FILES} ${INCL_FILES})
+
+#define include directory
 target_include_directories(MysticalMana PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/MysticalMana)
 
+#link libraries
 if(UNIX)
     target_link_libraries(MysticalMana PUBLIC ${DL} ${EX11} ${PTHREAD} ${GLFW} ${ASSIMP} ${FMOD} ${GENERICCODEGEN} ${GLEWSTATIC} ${GLSLLANG} ${GRAPHICSENGINEOPENGL} ${GRAPHICSENGINEVK} ${EHLSL} ${MACHINEINDEPENDENT} ${OGLCOMPILER} ${OSDEPENDENT} ${ESPIRV} ${SPIRVCROSSCORE} ${SPIRVTOOLS} ${SPIRVTOOLSOPT} ${DILIGENTFX} ${DILIGENTTOOLS})
 elseif(WIN32)
