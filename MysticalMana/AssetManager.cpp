@@ -3,6 +3,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <exception>
+#include <ctime>
+
+AssetManager::AssetManager()
+{
+	srand(time(0));
+}
 
 std::vector<Vertex> AssetManager::GetMeshVertices(const std::string& file_path)
 {
@@ -52,11 +58,11 @@ std::vector<Vertex> AssetManager::GetMeshVertices(const std::string& file_path)
 				a_vertex.m_position.y = position_vector.y;
 				a_vertex.m_position.z = position_vector.z;
 
-				//Grab the normal vector
-				aiVector3D normal_vector = current_mesh->mVertices[current_face.mIndices[vertex_counter]];
-				a_vertex.m_normal.x = normal_vector.x;
-				a_vertex.m_normal.y = normal_vector.y;
-				a_vertex.m_normal.z = normal_vector.z;
+				////Grab the normal vector
+				//aiVector3D normal_vector = current_mesh->mVertices[current_face.mIndices[vertex_counter]];
+				//a_vertex.m_normal.x = normal_vector.x;
+				//a_vertex.m_normal.y = normal_vector.y;
+				//a_vertex.m_normal.z = normal_vector.z;
 
 				//Grab the texture coordinates
 				aiVector3D texture_coordinates = current_mesh->mTextureCoords[0][current_face.mIndices[vertex_counter]];

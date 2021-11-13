@@ -40,6 +40,12 @@ find_library(SPIRVTOOLS SPIRV-Tools PATHS "C:\\Program Files (x86)\\Microsoft Vi
 find_library(SPIRVTOOLSOPT SPIRV-Tools-opt PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 find_library(DILIGENTFX DiligentFX PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 find_library(DILIGENTTOOLS DiligentTools Diligent-GraphicsTools PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
+find_library(DILIGENTTEXTURELOADER Diligent-TextureLoader PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
+find_library(DILIGENTZLIB ZLib PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
+find_library(DILIGENTJPEG LibJpeg PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
+find_library(DILIGENTTIFF LibTiff PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
+find_library(DILIGENTPNG LibPng PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
+find_library(DILIGENTASSETLOADER Diligent-AssetLoader PATHS "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64" REQUIRED)
 
 
 #Add headers, sources, and assets
@@ -57,5 +63,6 @@ target_include_directories(MysticalMana PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Mysti
 if(UNIX)
     target_link_libraries(MysticalMana PUBLIC ${DL} ${EX11} ${PTHREAD} ${GLFW} ${ASSIMP} ${FMOD} ${GENERICCODEGEN} ${GLEWSTATIC} ${GLSLLANG} ${GRAPHICSENGINEOPENGL} ${GRAPHICSENGINEVK} ${EHLSL} ${MACHINEINDEPENDENT} ${OGLCOMPILER} ${OSDEPENDENT} ${ESPIRV} ${SPIRVCROSSCORE} ${SPIRVTOOLS} ${SPIRVTOOLSOPT} ${DILIGENTFX} ${DILIGENTTOOLS})
 elseif(WIN32)
-    target_link_libraries(MysticalMana PUBLIC ${DILIGENTWIN32} ${DILIGENTSHADERTOOLS} ${DILIGENTPRIMITIVES} ${DILIGENTHLSL2GLSL} ${DILIGENTGRAPHICSENGINE} ${DILIGENTACCESSORIES} ${DILIGENTCOMMON} ${DILIGENTBASICPLATFORM} ${GLFW} ${ASSIMP} ${FMOD} ${GENERICCODEGEN} ${GLEWSTATIC} ${GLSLLANG} ${GRAPHICSENGINEOPENGL} ${GRAPHICSENGINEVK} ${EHLSL} ${MACHINEINDEPENDENT} ${OGLCOMPILER} ${OSDEPENDENT} ${ESPIRV} ${SPIRVCROSSCORE} ${SPIRVTOOLS} ${SPIRVTOOLSOPT} ${DILIGENTFX} ${DILIGENTTOOLS})
+    target_link_libraries(MysticalMana PUBLIC ${DILIGENTWIN32} ${DILIGENTSHADERTOOLS} ${DILIGENTPRIMITIVES} ${DILIGENTHLSL2GLSL} ${DILIGENTGRAPHICSENGINE} ${DILIGENTACCESSORIES} ${DILIGENTCOMMON} ${DILIGENTBASICPLATFORM} ${GLFW} ${ASSIMP} ${FMOD} ${GENERICCODEGEN} ${GLEWSTATIC} ${GLSLLANG} ${GRAPHICSENGINEOPENGL} ${GRAPHICSENGINEVK} ${EHLSL} ${MACHINEINDEPENDENT} ${OGLCOMPILER} ${OSDEPENDENT} ${ESPIRV} ${SPIRVCROSSCORE} ${SPIRVTOOLS} ${SPIRVTOOLSOPT} ${DILIGENTFX} ${DILIGENTTOOLS} ${DILIGENTZLIB} ${DILIGENTJPEG} ${DILIGENTTIFF} ${DILIGENTPNG} ${DILIGENTASSETLOADER})
+    target_link_libraries(MysticalMana PRIVATE ${DILIGENTTEXTURELOADER})
 endif()

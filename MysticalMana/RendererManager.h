@@ -25,6 +25,10 @@
 #include <DiligentCore/Graphics/GraphicsEngine/interface/SwapChain.h>
 #include <DiligentCore/Common/interface/BasicMath.hpp>
 #include <DiligentCore/Graphics/GraphicsTools/interface/MapHelper.hpp>
+#include <DiligentTools/TextureLoader/interface/TextureLoader.h>
+#include <DiligentTools/TextureLoader/interface/TextureUtilities.h>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/Texture.h>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/TextureView.h>
 
 class RendererManager
 {
@@ -95,6 +99,6 @@ class RendererManager
 		void PaintNextFrame(StaticEntity& static_entity);
 		Diligent::RefCntAutoPtr<Diligent::IBuffer> CreateVertexBuffer(StaticEntity& staticEntity);
 		Diligent::RefCntAutoPtr<Diligent::IBuffer> CreateIndexBuffer(StaticEntity& staticEntity);
-
+		Diligent::ITextureView* CreateTextureFromFile(Diligent::Char* texture_file_path);
 };
 #endif

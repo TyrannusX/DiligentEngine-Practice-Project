@@ -8,6 +8,7 @@
 class AssetManager
 {
 	public:
+		AssetManager();
 		std::vector<Vertex> GetMeshVertices(const std::string& file_path);
 };
 #endif

@@ -34,6 +34,10 @@ void Application::Run()
 	static_entity.m_vertex_buffer = m_renderer_manager_->CreateVertexBuffer(static_entity);
 	/*static_entity.m_index_buffer = m_renderer_manager_->CreateIndexBuffer(static_entity);*/
 
+	//Set texture on entity
+	/*static_entity.m_texture_file_path = "C:\\GameAssets\\MandalorianTextures\\dirt 2.png";*/
+	static_entity.m_texture = m_renderer_manager_->CreateTextureFromFile("C:\\GameAssets\\MandalorianTextures\\dirt 2.png");
+
 	bool app_is_running = true;
 	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 5.0f);
 	Diligent::Vector3<float> camera_rotation_vector(0.0f, 0.0f, 0.0f);

@@ -6,8 +6,6 @@
 struct UniformConstants
 {
     Diligent::float4x4 WorldViewProj;
-    Diligent::float4x4 NormalTransform;
-    Diligent::float4 LightDirection;
 };
 
 #endif

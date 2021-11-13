@@ -163,20 +163,10 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 			0 //Normalized?
 		},
 
-		//Attribute 1 is the vertex normal
-		Diligent::LayoutElement
-		{
-			1, //Attribute number that the shader will pull from its struct
-			0, //Buffer slot (defaults to 0)
-			3, //Number of components (position is x,y,z
-			Diligent::VT_FLOAT32, //component value type
-			0 //Normalized?
-		},
-
 		//Attribute 2 is the texture coordinate
 		Diligent::LayoutElement
 		{
-			2, //Attribute number that the shader will pull from its struct
+			1, //Attribute number that the shader will pull from its struct
 			0, //Buffer slot (defaults to 0)
 			2, //Number of components (position is x,y,z
 			Diligent::VT_FLOAT32, //component value type
@@ -218,7 +208,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	};
 	Diligent::ImmutableSamplerDesc immutable_samplers[] =
 	{
-		{Diligent::SHADER_TYPE_PIXEL, "g_Texture_sampler", linear_sample}
+		{Diligent::SHADER_TYPE_PIXEL, "g_Texture", linear_sample}
 	};
 	pipeline_create_info.PSODesc.ResourceLayout.ImmutableSamplers = immutable_samplers;
 	pipeline_create_info.PSODesc.ResourceLayout.NumImmutableSamplers = _countof(immutable_samplers);
@@ -262,10 +252,8 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	* send data from the C++ application (any data)
 	* to a match value found in the shader CBuffer constant data.
 	*/
-	Diligent::MapHelper<UniformConstants> uniform_buffer_constant_data(m_immediate_context_, m_uniform_buffer_, Diligent::MAP_WRITE, Diligent::MAP_FLAG_DISCARD);
-	uniform_buffer_constant_data->WorldViewProj = m_world_view_projection_matrix_.Transpose();
-	uniform_buffer_constant_data->NormalTransform = m_world_matrix_.RemoveTranslation().Inverse();
-	uniform_buffer_constant_data->LightDirection = Diligent::normalize(Diligent::float3(-0.49f, -0.60f, 0.64f));
+	Diligent::MapHelper<Diligent::float4x4> uniform_buffer_constant_data(m_immediate_context_, m_uniform_buffer_, Diligent::MAP_WRITE, Diligent::MAP_FLAG_DISCARD);
+	*uniform_buffer_constant_data = m_world_view_projection_matrix_.Transpose();
 
 	/*
 	* Bind the vertex buffer of the static entity to the pipeline.
@@ -403,4 +391,21 @@ Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateIndexBuffer(St
 	Diligent::RefCntAutoPtr<Diligent::IBuffer> buffer;
 	m_render_device_->CreateBuffer(buffer_description, &buffer_data, &buffer);
 	return buffer;
+}
+
+Diligent::ITextureView* RendererManager::CreateTextureFromFile(Diligent::Char* texture_file_path)
+{
+	//Create textue from file
+	Diligent::TextureLoadInfo texture_load_info;
+	texture_load_info.IsSRGB = true;
+	Diligent::RefCntAutoPtr<Diligent::ITexture> texture;
+	Diligent::CreateTextureFromFile(texture_file_path, texture_load_info, m_render_device_, &texture);
+
+	//Get the shader resource view for the shader
+	Diligent::ITextureView* texture_resource_view = texture->GetDefaultView(Diligent::TEXTURE_VIEW_SHADER_RESOURCE);
+
+	//Use the shader resource binder to get and set the g_Texture variable in the pixel shader
+	m_shader_resource_binder_->GetVariableByName(Diligent::SHADER_TYPE_PIXEL, "g_Texture")->Set(texture_resource_view);
+
+	return texture_resource_view;
 }
