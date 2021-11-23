@@ -420,4 +420,11 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 
+#CUSTOM STUFF
 build/*
+assimp/*
+DiligentCore/*
+DiligentTools/*
+glfw/*
+SDL/*
+SDL_Mixer/*
