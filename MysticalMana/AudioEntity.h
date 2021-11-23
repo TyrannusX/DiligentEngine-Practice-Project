@@ -2,12 +2,14 @@
 #define AUDIOENTITY_H
 
 #include "BaseEntity.h"
-#include <FMOD/fmod.hpp>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 struct AudioEntity : BaseEntity
 {
 	std::string m_file_name;
-	FMOD::Sound* m_fmound_sound_handle;
+	Mix_Music* background_music;
+	Mix_Chunk* sound_effect;
 	bool m_is_audio_playing = false;
 };
 #endif

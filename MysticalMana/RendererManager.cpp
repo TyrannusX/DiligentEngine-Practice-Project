@@ -127,7 +127,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	shader_create_info.Desc.ShaderType = Diligent::SHADER_TYPE_VERTEX;
 	shader_create_info.EntryPoint = "main";
 	shader_create_info.Desc.Name = "Mystical Mana Vertex Shader";
-	shader_create_info.FilePath = "C:\\code\\c++\\MysticalMana\\build\\Debug\\vertex.hlsl";
+	shader_create_info.FilePath = "Debug/vertex.hlsl";
 	m_render_device_->CreateShader(shader_create_info, &vertex_shader_handle);
 
 	//Pixel/Fragment shader handle
@@ -135,7 +135,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	shader_create_info.Desc.ShaderType = Diligent::SHADER_TYPE_PIXEL;
 	shader_create_info.EntryPoint = "main";
 	shader_create_info.Desc.Name = "Mystical Mana Pixel Shader";
-	shader_create_info.FilePath = "C:\\code\\c++\\MysticalMana\\build\\Debug\\fragment.hlsl";
+	shader_create_info.FilePath = "Debug/fragment.hlsl";
 	m_render_device_->CreateShader(shader_create_info, &pixel_shader_handle);
 
 	//Define uniform buffer.

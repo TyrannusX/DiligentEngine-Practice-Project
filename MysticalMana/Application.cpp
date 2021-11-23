@@ -20,12 +20,13 @@ void Application::Run()
 	//Audio
 	AudioEntity audio_entity;
 	audio_entity.m_id = "BACKGROUND_MUSIC";
-	audio_entity.m_file_name = "C:\\GameAssets\\deus-ex-ambient.mp3";
+	audio_entity.m_file_name = "/media/rr-linux/Blade 15 SSD/GameAssets/deus-ex-ambient.wav";
+	audio_entity.background_music = m_audio_manager_->LoadMusic(audio_entity.m_file_name);
 
 	//Graphics
 	StaticEntity static_entity;
 	static_entity.m_id = "MY_OBJECT";
-	static_entity.mesh_file_name = "C:\\GameAssets\\Mandalorian.obj";
+	static_entity.mesh_file_name = "/media/rr-linux/Blade 15 SSD/GameAssets/Mandalorian.obj";
 
 	//Define entity vertex data
 	static_entity.m_vertices = m_asset_manager_->GetMeshVertices(static_entity.mesh_file_name);
@@ -33,10 +34,11 @@ void Application::Run()
 	//Set buffers on entity
 	static_entity.m_vertex_buffer = m_renderer_manager_->CreateVertexBuffer(static_entity);
 	/*static_entity.m_index_buffer = m_renderer_manager_->CreateIndexBuffer(static_entity);*/
-
+	std::cout << "END OF VERTEX BUFFER" << std::endl;
 	//Set texture on entity
 	/*static_entity.m_texture_file_path = "C:\\GameAssets\\MandalorianTextures\\dirt 2.png";*/
-	static_entity.m_texture = m_renderer_manager_->CreateTextureFromFile("C:\\GameAssets\\MandalorianTextures\\dirt 2.png");
+	static_entity.m_texture = m_renderer_manager_->CreateTextureFromFile("/media/rr-linux/Blade 15 SSD/GameAssets/MandalorianTextures/dirt 2.png");
+	std::cout << "END OF TEXTURE" << std::endl;
 
 	bool app_is_running = true;
 	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 5.0f);
@@ -79,8 +81,10 @@ void Application::Run()
 		{
 			camera_rotation_vector.y -= 0.01;
 		}
-
+		
+		std::cout << "Playing music" << std::endl;
 		m_audio_manager_->PlayAudio(audio_entity);
+		std::cout << "Done Playing music" << std::endl;
 		m_renderer_manager_->UpdateWorld(camera_vector, camera_rotation_vector);
 		m_renderer_manager_->PaintNextFrame(static_entity);
 	} 
