@@ -86,4 +86,9 @@ namespace MysticalMana
 
 		return events;
 	}
+
+	double Window::GetCurrentTime()
+	{
+		return glfwGetTime();	
+	}
 }

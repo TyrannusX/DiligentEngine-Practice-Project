@@ -16,7 +16,6 @@ Application::Application()
 void Application::Run()
 {
 	//HARD CODED ENTITIES
-
 	//Audio
 	AudioEntity audio_entity;
 	audio_entity.m_id = "BACKGROUND_MUSIC";
@@ -33,60 +32,69 @@ void Application::Run()
 
 	//Set buffers on entity
 	static_entity.m_vertex_buffer = m_renderer_manager_->CreateVertexBuffer(static_entity);
-	/*static_entity.m_index_buffer = m_renderer_manager_->CreateIndexBuffer(static_entity);*/
-	std::cout << "END OF VERTEX BUFFER" << std::endl;
+
 	//Set texture on entity
-	/*static_entity.m_texture_file_path = "C:\\GameAssets\\MandalorianTextures\\dirt 2.png";*/
 	static_entity.m_texture = m_renderer_manager_->CreateTextureFromFile("/media/rr-linux/Blade 15 SSD/GameAssets/MandalorianTextures/dirt 2.png");
-	std::cout << "END OF TEXTURE" << std::endl;
 
 	bool app_is_running = true;
 	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 5.0f);
 	Diligent::Vector3<float> camera_rotation_vector(0.0f, 0.0f, 0.0f);
 
+	//Configure FPS
+	const double frame_limit = 1.0 / 60.0;
+	double last_update_time = 0;
+	double last_frame_time = 0;
+
 	do
 	{
+		double now = m_window_->GetCurrentTime();
+		double delta_time = now - last_update_time;
+
 		app_is_running = !m_window_->Poll();
 		std::unordered_map<UserInputEvents, bool> events = m_window_->UserInputCheck();
 
-		if (events[UserInputEvents::kLeft])
+		if((now - last_frame_time) >= frame_limit)
 		{
-			camera_vector.x += 1;
+			if (events[UserInputEvents::kLeft])
+			{
+				camera_vector.x += 1;
+			}
+			if (events[UserInputEvents::kRight])
+			{
+				camera_vector.x -= 1;
+			}
+			if (events[UserInputEvents::kUp])
+			{
+				camera_vector.z -= 1;
+			}
+			if (events[UserInputEvents::kDown])
+			{
+				camera_vector.z += 1;
+			}
+			if (events[UserInputEvents::kS])
+			{
+				camera_vector.y += 1;
+			}
+			if (events[UserInputEvents::kW])
+			{
+				camera_vector.y -= 1;
+			}
+			if (events[UserInputEvents::kQ])
+			{
+				camera_rotation_vector.y += 0.01;
+			}
+			if (events[UserInputEvents::kE])
+			{
+				camera_rotation_vector.y -= 0.01;
+			}
+
+			m_audio_manager_->PlayAudio(audio_entity);
+			m_renderer_manager_->UpdateWorld(camera_vector, camera_rotation_vector);
+			m_renderer_manager_->PaintNextFrame(static_entity);
+			last_frame_time = now;
 		}
-		if (events[UserInputEvents::kRight])
-		{
-			camera_vector.x -= 1;
-		}
-		if (events[UserInputEvents::kUp])
-		{
-			camera_vector.z -= 1;
-		}
-		if (events[UserInputEvents::kDown])
-		{
-			camera_vector.z += 1;
-		}
-		if (events[UserInputEvents::kS])
-		{
-			camera_vector.y += 1;
-		}
-		if (events[UserInputEvents::kW])
-		{
-			camera_vector.y -= 1;
-		}
-		if (events[UserInputEvents::kQ])
-		{
-			camera_rotation_vector.y += 0.01;
-		}
-		if (events[UserInputEvents::kE])
-		{
-			camera_rotation_vector.y -= 0.01;
-		}
-		
-		std::cout << "Playing music" << std::endl;
-		m_audio_manager_->PlayAudio(audio_entity);
-		std::cout << "Done Playing music" << std::endl;
-		m_renderer_manager_->UpdateWorld(camera_vector, camera_rotation_vector);
-		m_renderer_manager_->PaintNextFrame(static_entity);
+
+		last_update_time = now;
 	} 
 	while (app_is_running);
 }

@@ -24,6 +24,7 @@ namespace MysticalMana
 			bool Poll();
 			GLFWwindow* GetUnderlyingWindow();
 			std::unordered_map<UserInputEvents, bool> UserInputCheck();
+			double GetCurrentTime();
 
 		private:
 			int m_width_;
