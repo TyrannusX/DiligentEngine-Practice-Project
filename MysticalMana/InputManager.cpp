@@ -1,7 +1,7 @@
 #include "InputManager.h"
 #include <iostream>
 
-InputManager::InputManager(MysticalMana::Window* window)
+InputManager::InputManager(MysticalMana::Window *window)
 {
 	m_underlying_window_ = window->GetUnderlyingWindow();
 }

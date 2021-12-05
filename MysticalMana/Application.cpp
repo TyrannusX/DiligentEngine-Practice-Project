@@ -3,6 +3,7 @@
 #include "StaticEntity.h"
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 
 Application::Application()
 {
@@ -37,8 +38,8 @@ void Application::Run()
 	static_entity.m_texture = m_renderer_manager_->CreateTextureFromFile("/media/rr-linux/Blade 15 SSD/GameAssets/viking_room.png");
 
 	bool app_is_running = true;
-	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 5.0f);
-	Diligent::Vector3<float> camera_rotation_vector(0.0f, 0.0f, 0.0f);
+	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 2.0f);
+	Diligent::Vector3<float> camera_rotation_vector(-1.6f, -6.3f, 1.5f);
 
 	//Configure FPS
 	const double frame_limit = 1.0 / 60.0;
@@ -51,33 +52,34 @@ void Application::Run()
 		double delta_time = now - last_update_time;
 
 		app_is_running = !m_window_->Poll();
-		std::unordered_map<UserInputEvents, bool> events = m_window_->UserInputCheck();
 
-		if((now - last_frame_time) >= frame_limit)
+		if ((now - last_frame_time) >= frame_limit)
 		{
+			std::unordered_map<UserInputEvents, bool> events = m_window_->UserInputCheck();
+
 			if (events[UserInputEvents::kLeft])
 			{
-				camera_vector.x += 1;
+				camera_vector.x += 0.1;
 			}
 			if (events[UserInputEvents::kRight])
 			{
-				camera_vector.x -= 1;
+				camera_vector.x -= 0.1;
 			}
 			if (events[UserInputEvents::kUp])
 			{
-				camera_vector.z -= 1;
+				camera_vector.z -= 0.1;
 			}
 			if (events[UserInputEvents::kDown])
 			{
-				camera_vector.z += 1;
+				camera_vector.z += 0.1;
 			}
 			if (events[UserInputEvents::kS])
 			{
-				camera_vector.y += 1;
+				camera_vector.y += 0.1;
 			}
 			if (events[UserInputEvents::kW])
 			{
-				camera_vector.y -= 1;
+				camera_vector.y -= 0.1;
 			}
 			if (events[UserInputEvents::kQ])
 			{
@@ -87,6 +89,22 @@ void Application::Run()
 			{
 				camera_rotation_vector.y -= 0.01;
 			}
+			if (events[UserInputEvents::kA])
+			{
+				camera_rotation_vector.x += 0.01;
+			}
+			if (events[UserInputEvents::kD])
+			{
+				camera_rotation_vector.x -= 0.01;
+			}
+			if (events[UserInputEvents::kZ])
+			{
+				camera_rotation_vector.z += 0.01;
+			}
+			if (events[UserInputEvents::kC])
+			{
+				camera_rotation_vector.z -= 0.01;
+			}
 
 			m_audio_manager_->PlayAudio(audio_entity);
 			m_renderer_manager_->UpdateWorld(camera_vector, camera_rotation_vector);
@@ -95,6 +113,5 @@ void Application::Run()
 		}
 
 		last_update_time = now;
-	} 
-	while (app_is_running);
+	} while (app_is_running);
 }

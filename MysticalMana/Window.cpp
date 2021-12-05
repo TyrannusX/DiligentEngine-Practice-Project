@@ -42,7 +42,7 @@ namespace MysticalMana
 		return should_close_window;
 	}
 
-	GLFWwindow* Window::GetUnderlyingWindow()
+	GLFWwindow *Window::GetUnderlyingWindow()
 	{
 		return m_glfw_window_.get();
 	}
@@ -83,12 +83,28 @@ namespace MysticalMana
 		{
 			events[UserInputEvents::kE] = true;
 		}
+		if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_A) == GLFW_PRESS)
+		{
+			events[UserInputEvents::kA] = true;
+		}
+		if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_D) == GLFW_PRESS)
+		{
+			events[UserInputEvents::kD] = true;
+		}
+		if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_Z) == GLFW_PRESS)
+		{
+			events[UserInputEvents::kZ] = true;
+		}
+		if (glfwGetKey(m_glfw_window_.get(), GLFW_KEY_C) == GLFW_PRESS)
+		{
+			events[UserInputEvents::kC] = true;
+		}
 
 		return events;
 	}
 
 	double Window::GetCurrentTime()
 	{
-		return glfwGetTime();	
+		return glfwGetTime();
 	}
 }

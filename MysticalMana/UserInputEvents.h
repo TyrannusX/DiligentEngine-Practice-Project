@@ -11,5 +11,9 @@ enum class UserInputEvents
 	kS,
 	kQ,
 	kE,
+	kA,
+	kD,
+	kZ,
+	kC
 };
 #endif

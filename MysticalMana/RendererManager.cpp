@@ -5,24 +5,24 @@
 * Hide Windows Header functionality.
 */
 #ifdef _WIN32
-	#define GLFW_EXPOSE_NATIVE_WIN32 1
-	#define NOMINMAX
+#define GLFW_EXPOSE_NATIVE_WIN32 1
+#define NOMINMAX
 #elif _WIN64
-	#define GLFW_EXPOSE_NATIVE_WIN32 1
-	#define NOMINMAX
+#define GLFW_EXPOSE_NATIVE_WIN32 1
+#define NOMINMAX
 #elif __linux__
-	#define GLFW_EXPOSE_NATIVE_X11 1
+#define GLFW_EXPOSE_NATIVE_X11 1
 #endif
 
 /*
 * Define macros for Diligent Engine
 */
 #ifdef _WIN32
-	#define PLATFORM_WIN32 1
+#define PLATFORM_WIN32 1
 #elif _WIN64
-	#define PLATFORM_WIN32 1
+#define PLATFORM_WIN32 1
 #elif __linux__
-	#define PLATFORM_LINUX 1
+#define PLATFORM_LINUX 1
 #endif
 
 #include <iostream>
@@ -38,47 +38,47 @@ int modifier = 1;
 float scale_modifier = 1.0f;
 bool reverse_scale = false;
 
-RendererManager::RendererManager(MysticalMana::Window* window)
+RendererManager::RendererManager(MysticalMana::Window *window)
 {
 	//Get underlying window and details
-	GLFWwindow* underlying_window = window->GetUnderlyingWindow();
-	
+	GLFWwindow *underlying_window = window->GetUnderlyingWindow();
+
 	int window_width;
 	int window_height;
 	glfwGetWindowSize(underlying_window, &window_width, &window_height);
 
-	//Get underlying OS window
-	#ifdef _WIN32
-		HWND native_os_window = glfwGetWin32Window(underlying_window);
-	#elif _WIN64
-		HWND native_os_window = glfwGetWin32Window(underlying_window);
-	#elif __linux__
-		auto native_os_window = glfwGetX11Window(underlying_window);
-		auto native_os_display = glfwGetX11Display();
-	#endif
+//Get underlying OS window
+#ifdef _WIN32
+	HWND native_os_window = glfwGetWin32Window(underlying_window);
+#elif _WIN64
+	HWND native_os_window = glfwGetWin32Window(underlying_window);
+#elif __linux__
+	auto native_os_window = glfwGetX11Window(underlying_window);
+	auto native_os_display = glfwGetX11Display();
+#endif
 
 	m_view_width_ = (uint16_t)window_width;
 	m_view_height_ = (uint16_t)window_height;
 
 	//Initialize Vulkan Device, Context, and Swap Chain
-	Diligent::IEngineFactoryVk* engine_factory = Diligent::GetEngineFactoryVk();
+	Diligent::IEngineFactoryVk *engine_factory = Diligent::GetEngineFactoryVk();
 	Diligent::EngineVkCreateInfo create_info;
 	engine_factory->CreateDeviceAndContextsVk(create_info, &m_render_device_, &m_immediate_context_);
 	Diligent::SwapChainDesc swap_chain_description;
 
-	//Setup the native window handle for Diligent Engine
-	#ifdef _WIN32
-		Diligent::Win32NativeWindow diligent_native_window_handle{ native_os_window };
-		engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
-	#elif _WIN64
-		Diligent::Win32NativeWindow diligent_native_window_handle{ native_os_window };
-		engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
-	#elif __linux__
-		Diligent::LinuxNativeWindow diligent_native_window_handle;
-		diligent_native_window_handle.WindowId = native_os_window;
-		diligent_native_window_handle.pDisplay = native_os_display;
-		engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
-	#endif
+//Setup the native window handle for Diligent Engine
+#ifdef _WIN32
+	Diligent::Win32NativeWindow diligent_native_window_handle{native_os_window};
+	engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
+#elif _WIN64
+	Diligent::Win32NativeWindow diligent_native_window_handle{native_os_window};
+	engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
+#elif __linux__
+	Diligent::LinuxNativeWindow diligent_native_window_handle;
+	diligent_native_window_handle.WindowId = native_os_window;
+	diligent_native_window_handle.pDisplay = native_os_display;
+	engine_factory->CreateSwapChainVk(m_render_device_, m_immediate_context_, swap_chain_description, diligent_native_window_handle, &m_swap_chain_);
+#endif
 
 	//Initialize graphics/compute pipeline
 	Diligent::GraphicsPipelineStateCreateInfo pipeline_create_info;
@@ -152,27 +152,24 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	* the vertex buffer. Basically, define metadata.
 	*/
 	Diligent::LayoutElement layout_elements[] =
-	{
-		//Attribute 0 is the vertex position
-		Diligent::LayoutElement
 		{
-			0, //Attribute number that the shader will pull from its struct
-			0, //Buffer slot (defaults to 0)
-			3, //Number of components (position is x,y,z
-			Diligent::VT_FLOAT32, //component value type
-			0 //Normalized?
-		},
+			//Attribute 0 is the vertex position
+			Diligent::LayoutElement{
+				0,					  //Attribute number that the shader will pull from its struct
+				0,					  //Buffer slot (defaults to 0)
+				3,					  //Number of components (position is x,y,z
+				Diligent::VT_FLOAT32, //component value type
+				0					  //Normalized?
+			},
 
-		//Attribute 2 is the texture coordinate
-		Diligent::LayoutElement
-		{
-			1, //Attribute number that the shader will pull from its struct
-			0, //Buffer slot (defaults to 0)
-			2, //Number of components (position is x,y,z
-			Diligent::VT_FLOAT32, //component value type
-			0 //Normalized?
-		}
-	};
+			//Attribute 2 is the texture coordinate
+			Diligent::LayoutElement{
+				1,					  //Attribute number that the shader will pull from its struct
+				0,					  //Buffer slot (defaults to 0)
+				2,					  //Number of components (position is x,y,z
+				Diligent::VT_FLOAT32, //component value type
+				0					  //Normalized?
+			}};
 	pipeline_create_info.GraphicsPipeline.InputLayout.LayoutElements = layout_elements;
 	pipeline_create_info.GraphicsPipeline.InputLayout.NumElements = _countof(layout_elements);
 
@@ -187,9 +184,8 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	* Define shader variables
 	*/
 	Diligent::ShaderResourceVariableDesc shader_variables[] =
-	{
-		{Diligent::SHADER_TYPE_PIXEL, "g_Texture", Diligent::SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE}
-	};
+		{
+			{Diligent::SHADER_TYPE_PIXEL, "g_Texture", Diligent::SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE}};
 	pipeline_create_info.PSODesc.ResourceLayout.Variables = shader_variables;
 	pipeline_create_info.PSODesc.ResourceLayout.NumVariables = _countof(shader_variables);
 
@@ -197,8 +193,7 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 	* Define the immutable sampler for g_Texture in the shader.
 	* This creates the anisotropic filter, which basically smooths the appearance of polygons.
 	*/
-	Diligent::SamplerDesc linear_sample
-	{
+	Diligent::SamplerDesc linear_sample{
 		Diligent::FILTER_TYPE_LINEAR,
 		Diligent::FILTER_TYPE_LINEAR,
 		Diligent::FILTER_TYPE_LINEAR,
@@ -207,9 +202,8 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 		Diligent::TEXTURE_ADDRESS_CLAMP,
 	};
 	Diligent::ImmutableSamplerDesc immutable_samplers[] =
-	{
-		{Diligent::SHADER_TYPE_PIXEL, "g_Texture", linear_sample}
-	};
+		{
+			{Diligent::SHADER_TYPE_PIXEL, "g_Texture", linear_sample}};
 	pipeline_create_info.PSODesc.ResourceLayout.ImmutableSamplers = immutable_samplers;
 	pipeline_create_info.PSODesc.ResourceLayout.NumImmutableSamplers = _countof(immutable_samplers);
 
@@ -225,20 +219,19 @@ RendererManager::RendererManager(MysticalMana::Window* window)
 
 RendererManager::~RendererManager()
 {
-
 }
 
-void RendererManager::PaintNextFrame(StaticEntity& static_entity)
+void RendererManager::PaintNextFrame(StaticEntity &static_entity)
 {
 	//
 	//Define the color to use for the render target background
-	const float kClearColor[] = { 0.350f,  0.350f,  0.350f, 1.0f };
+	const float kClearColor[] = {0.350f, 0.350f, 0.350f, 1.0f};
 
 	//Get handle to the render target (laptop screen) back buffer (drawing not yet shown to user) from the swap chain
-	Diligent::ITextureView* render_target_handle = m_swap_chain_->GetCurrentBackBufferRTV();
+	Diligent::ITextureView *render_target_handle = m_swap_chain_->GetCurrentBackBufferRTV();
 
 	//Get handle to the depth buffer
-	Diligent::ITextureView* depth_target_handle = m_swap_chain_->GetDepthBufferDSV();
+	Diligent::ITextureView *depth_target_handle = m_swap_chain_->GetDepthBufferDSV();
 
 	//Set the swap chain's render target (screen)
 	m_immediate_context_->SetRenderTargets(1, &render_target_handle, depth_target_handle, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
@@ -265,7 +258,7 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 	* The final flag tells Diligent to reset/drop previous vertex buffers.
 	*/
 	const Diligent::Uint64 kOffset = 0;
-	Diligent::IBuffer* buffers[] = { static_entity.m_vertex_buffer };
+	Diligent::IBuffer *buffers[] = {static_entity.m_vertex_buffer};
 	m_immediate_context_->SetVertexBuffers(0, 1, buffers, nullptr, Diligent::RESOURCE_STATE_TRANSITION_MODE_TRANSITION, Diligent::SET_VERTEX_BUFFERS_FLAG_RESET);
 
 	/*
@@ -306,29 +299,18 @@ void RendererManager::PaintNextFrame(StaticEntity& static_entity)
 
 void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligent::Vector3<float> cameraRotationVector)
 {
-	//Calculate the transformations (translation, rotation, scale) for the world for the current model
-	/*Diligent::float4x4 rotation_matrix = Diligent::float4x4::RotationY(Diligent::PI_F);
-	modifier++;*/
-
-	/*Diligent::float4x4 scale_matrix = Diligent::float4x4::Scale(scale_modifier, scale_modifier, scale_modifier);
-
-	if (scale_modifier >= 1.0f)
-	{
-		reverse_scale = true;
-	}
-	else if (scale_modifier <= 0.0f)
-	{
-		reverse_scale = false;
-	}
-
-	reverse_scale ? scale_modifier -= 0.01f : scale_modifier += 0.01f;*/
+	/*
+	* Matrix calculation "recipe"
+	* Final Matrix = Scale * Rotation * Translation
+	*/
 
 	//Calculate the world matrix which is where the rendered object will live relative to the origin (object space)
 	Diligent::float4x4 world_matrix = Diligent::float4x4::Translation(0.0f, 0.0f, 0.0f);
 
 	//Move the view (Camera/your eye/whatever) to desired spot in world
-	Diligent::float4x4 camera_rotation_matrix = Diligent::float4x4::RotationY(cameraRotationVector.y);
-	Diligent::float4x4 camera_matrix = camera_rotation_matrix * Diligent::float4x4::Translation(cameraVector.x, cameraVector.y, cameraVector.z);
+	Diligent::float4x4 camera_rotation_matrix = Diligent::float4x4::RotationZ(cameraRotationVector.z) * Diligent::float4x4::RotationY(cameraRotationVector.y) * Diligent::float4x4::RotationX(cameraRotationVector.x);
+	Diligent::float4x4 camera_translation_matrix = Diligent::float4x4::Translation(cameraVector.x, cameraVector.y, cameraVector.z);
+	Diligent::float4x4 camera_matrix = camera_rotation_matrix * camera_translation_matrix;
 
 	//Get the projection matrix (projection is like messing with camera lens settings like zoom)
 	Diligent::SwapChainDesc swap_chain_desc = m_swap_chain_->GetDesc();
@@ -355,11 +337,10 @@ void RendererManager::UpdateWorld(Diligent::Vector3<float> cameraVector, Diligen
 	projection_matrix.SetNearFarClipPlanes(0.1f, 100.0f, m_render_device_->GetDeviceInfo().IsGLDevice());
 
 	//Calculate the world_view_projection_matrix
-	m_world_matrix_ = world_matrix;
 	m_world_view_projection_matrix_ = world_matrix * camera_matrix * projection_matrix;
 }
 
-Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateVertexBuffer(StaticEntity & staticEntity)
+Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateVertexBuffer(StaticEntity &staticEntity)
 {
 	Diligent::BufferDesc buffer_description;
 	buffer_description.Name = "Mystical Mana Vertex Buffer";
@@ -376,7 +357,7 @@ Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateVertexBuffer(S
 	return buffer;
 }
 
-Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateIndexBuffer(StaticEntity& staticEntity)
+Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateIndexBuffer(StaticEntity &staticEntity)
 {
 	Diligent::BufferDesc buffer_description;
 	buffer_description.Name = "Mystical Mana Index Buffer";
@@ -393,7 +374,7 @@ Diligent::RefCntAutoPtr<Diligent::IBuffer> RendererManager::CreateIndexBuffer(St
 	return buffer;
 }
 
-Diligent::ITextureView* RendererManager::CreateTextureFromFile(Diligent::Char* texture_file_path)
+Diligent::ITextureView *RendererManager::CreateTextureFromFile(Diligent::Char *texture_file_path)
 {
 	//Create textue from file
 	Diligent::TextureLoadInfo texture_load_info;
@@ -402,7 +383,7 @@ Diligent::ITextureView* RendererManager::CreateTextureFromFile(Diligent::Char* t
 	Diligent::CreateTextureFromFile(texture_file_path, texture_load_info, m_render_device_, &texture);
 
 	//Get the shader resource view for the shader
-	Diligent::ITextureView* texture_resource_view = texture->GetDefaultView(Diligent::TEXTURE_VIEW_SHADER_RESOURCE);
+	Diligent::ITextureView *texture_resource_view = texture->GetDefaultView(Diligent::TEXTURE_VIEW_SHADER_RESOURCE);
 
 	//Use the shader resource binder to get and set the g_Texture variable in the pixel shader
 	m_shader_resource_binder_->GetVariableByName(Diligent::SHADER_TYPE_PIXEL, "g_Texture")->Set(texture_resource_view);
