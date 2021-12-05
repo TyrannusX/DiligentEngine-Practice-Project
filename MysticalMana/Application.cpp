@@ -25,7 +25,7 @@ void Application::Run()
 	//Graphics
 	StaticEntity static_entity;
 	static_entity.m_id = "MY_OBJECT";
-	static_entity.mesh_file_name = "/media/rr-linux/Blade 15 SSD/GameAssets/Mandalorian.obj";
+	static_entity.mesh_file_name = "/media/rr-linux/Blade 15 SSD/GameAssets/viking_room.obj";
 
 	//Define entity vertex data
 	static_entity.m_vertices = m_asset_manager_->GetMeshVertices(static_entity.mesh_file_name);
@@ -34,7 +34,7 @@ void Application::Run()
 	static_entity.m_vertex_buffer = m_renderer_manager_->CreateVertexBuffer(static_entity);
 
 	//Set texture on entity
-	static_entity.m_texture = m_renderer_manager_->CreateTextureFromFile("/media/rr-linux/Blade 15 SSD/GameAssets/MandalorianTextures/dirt 2.png");
+	static_entity.m_texture = m_renderer_manager_->CreateTextureFromFile("/media/rr-linux/Blade 15 SSD/GameAssets/viking_room.png");
 
 	bool app_is_running = true;
 	Diligent::Vector3<float> camera_vector(0.0f, 0.0f, 5.0f);
